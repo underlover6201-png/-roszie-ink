@@ -1,0 +1,55 @@
+{% extends 'admin/base.html' %}
+{% block title %}網站設定{% endblock %}
+{% block page_title %}網站設定{% endblock %}
+
+{% block extra_css %}
+<style>
+.admin-form-section{background:var(--admin-sidebar);border:1px solid var(--admin-border);padding:var(--sp-6);margin-bottom:var(--sp-6);}
+.admin-form-section h3{font-size:var(--text-xs);font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:var(--sp-5);padding-bottom:var(--sp-3);border-bottom:1px solid var(--admin-border);}
+.field{display:flex;flex-direction:column;gap:var(--sp-2);margin-bottom:var(--sp-4);}
+.field:last-child{margin-bottom:0;}
+.field__label{font-size:var(--text-xs);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-muted);}
+.field__input{background:var(--admin-bg);color:var(--color-text);border:1px solid var(--admin-border);padding:var(--sp-3);font-size:var(--text-sm);font-family:var(--font-sans);outline:none;width:100%;box-sizing:border-box;transition:border-color var(--ease-fast);}
+.field__input:focus{border-color:var(--color-text);}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-6);}
+@media(max-width:1024px){.settings-grid{grid-template-columns:1fr;}}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+  <h1 class="admin-page-header__title">網站設定</h1>
+</div>
+
+<form method="POST">
+<div class="settings-grid">
+  {% for section in schema %}
+  <div class="admin-form-section">
+    <h3>{{ section.section }}</h3>
+    {% for field in section.fields %}
+    <div class="field">
+      <label class="field__label" for="{{ field.key }}">{{ field.label }}</label>
+      <input class="field__input"
+             type="{{ field.type }}"
+             id="{{ field.key }}"
+             name="{{ field.key }}"
+             value="{{ current_values.get(field.key, field.default) }}"
+             placeholder="{{ field.default }}">
+    </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</div>
+
+<div style="margin-top:var(--sp-6);display:flex;gap:var(--sp-4);">
+  <button type="submit" class="btn btn--primary">儲存所有設定</button>
+  <a href="{{ url_for('admin.dashboard') }}" class="btn btn--ghost">取消</a>
+</div>
+</form>
+
+<div style="margin-top:var(--sp-8);padding:var(--sp-4);background:var(--admin-sidebar);border:1px solid var(--admin-border);">
+  <p style="font-size:var(--text-xs);color:var(--color-text-muted);">
+    設定儲存後立即生效。部分設定（如 GA ID）需要重新整理頁面才能看到效果。
+  </p>
+</div>
+{% endblock %}

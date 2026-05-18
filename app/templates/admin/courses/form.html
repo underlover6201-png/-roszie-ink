@@ -1,0 +1,136 @@
+{% extends 'admin/base.html' %}
+{% block title %}{% if course %}編輯課程{% else %}新增課程{% endif %}{% endblock %}
+{% block page_title %}{% if course %}編輯課程{% else %}新增課程{% endif %}{% endblock %}
+
+{% block extra_css %}
+<style>
+.form-grid{display:grid;grid-template-columns:1fr 300px;gap:var(--sp-8);align-items:start;}
+@media(max-width:1024px){.form-grid{grid-template-columns:1fr;}}
+.admin-form-section{background:var(--admin-sidebar);border:1px solid var(--admin-border);padding:var(--sp-6);margin-bottom:var(--sp-6);}
+.admin-form-section h3{font-size:var(--text-xs);font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:var(--sp-5);padding-bottom:var(--sp-3);border-bottom:1px solid var(--admin-border);}
+.field{display:flex;flex-direction:column;gap:var(--sp-2);margin-bottom:var(--sp-4);}
+.field__label{font-size:var(--text-xs);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-muted);}
+.field__input,.field__select,.field__textarea{background:var(--admin-bg);color:var(--color-text);border:1px solid var(--admin-border);padding:var(--sp-3);font-size:var(--text-sm);font-family:var(--font-sans);outline:none;width:100%;box-sizing:border-box;transition:border-color var(--ease-fast);}
+.field__input:focus,.field__select:focus,.field__textarea:focus{border-color:var(--color-text);}
+.field__textarea{resize:vertical;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);}
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:var(--sp-6);">
+  <a href="{{ url_for('admin.admin_courses') }}" style="font-size:var(--text-sm);color:var(--color-text-muted);text-decoration:none;">&larr; 課程列表</a>
+</div>
+
+<form method="POST">
+<div class="form-grid">
+  <div>
+    <div class="admin-form-section">
+      <h3>課程資訊</h3>
+      <div class="field">
+        <label class="field__label" for="title">課程名稱 *</label>
+        <input class="field__input" type="text" id="title" name="title" required
+               value="{{ course.title if course else '' }}" placeholder="課程名稱">
+      </div>
+      <div class="field">
+        <label class="field__label" for="slug">Slug</label>
+        <input class="field__input" type="text" id="slug" name="slug"
+               value="{{ course.slug if course else '' }}" placeholder="自動產生">
+      </div>
+      <div class="field">
+        <label class="field__label" for="instructor_id">講師</label>
+        <select class="field__select" id="instructor_id" name="instructor_id">
+          <option value="">不指定</option>
+          {% for artist in all_artists %}
+          <option value="{{ artist.id }}" {% if course and course.instructor_id == artist.id %}selected{% endif %}>{{ artist.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="description">課程簡介</label>
+        <textarea class="field__textarea" id="description" name="description" rows="4"
+                  placeholder="課程簡介，顯示於列表頁">{{ course.description or '' }}</textarea>
+      </div>
+      <div class="field">
+        <label class="field__label" for="content">課程大綱（HTML）</label>
+        <textarea class="field__textarea" id="content" name="content" rows="12"
+                  style="font-family:var(--font-mono);font-size:13px;"
+                  placeholder="<h2>課程內容</h2><p>...</p>">{{ course.content or '' }}</textarea>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="admin-form-section">
+      <h3>狀態 & 售價</h3>
+      <div class="field">
+        <label class="field__label" for="status">狀態</label>
+        <select class="field__select" id="status" name="status">
+          {% for s in CourseStatus %}
+          <option value="{{ s.name }}" {% if course and course.status == s %}selected{% elif not course and s.name == 'draft' %}selected{% endif %}>
+            {{ {'draft':'草稿','open':'開放報名','closed':'截止報名','completed':'已結束'}[s.name] }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label class="field__label" for="price">售價</label>
+          <input class="field__input" type="number" id="price" name="price" min="0" step="1"
+                 value="{{ course.price if course and course.price else '' }}" placeholder="0">
+        </div>
+        <div class="field">
+          <label class="field__label" for="currency">幣別</label>
+          <select class="field__select" id="currency" name="currency">
+            <option value="TWD" {% if not course or course.currency == 'TWD' %}selected{% endif %}>TWD</option>
+            <option value="USD" {% if course and course.currency == 'USD' %}selected{% endif %}>USD</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-form-section">
+      <h3>課程時間 & 地點</h3>
+      <div class="field">
+        <label class="field__label" for="start_date">開始日期</label>
+        <input class="field__input" type="date" id="start_date" name="start_date"
+               value="{{ course.start_date.isoformat() if course and course.start_date else '' }}">
+      </div>
+      <div class="field">
+        <label class="field__label" for="end_date">結束日期</label>
+        <input class="field__input" type="date" id="end_date" name="end_date"
+               value="{{ course.end_date.isoformat() if course and course.end_date else '' }}">
+      </div>
+      <div class="field">
+        <label class="field__label" for="location">地點</label>
+        <input class="field__input" type="text" id="location" name="location"
+               value="{{ course.location or '' }}" placeholder="例：ROSZIE INK 工作室">
+      </div>
+      <div class="field">
+        <label class="field__label" for="max_students">人數上限</label>
+        <input class="field__input" type="number" id="max_students" name="max_students" min="1"
+               value="{{ course.max_students if course and course.max_students else '' }}" placeholder="留空 = 不限">
+      </div>
+    </div>
+
+    <div class="admin-form-section">
+      <h3>封面圖</h3>
+      <div class="field">
+        <label class="field__label" for="cover_image_url">圖片 URL</label>
+        <input class="field__input" type="url" id="cover_image_url" name="cover_image_url"
+               value="{{ course.cover_image_url or '' }}" placeholder="https://...">
+      </div>
+      {% if course and course.cover_image_url %}
+      <img src="{{ course.cover_image_url }}" alt="preview"
+           style="width:100%;max-height:100px;object-fit:cover;border:1px solid var(--admin-border);">
+      {% endif %}
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:var(--sp-3);">
+      <button type="submit" class="btn btn--primary">{% if course %}儲存變更{% else %}新增課程{% endif %}</button>
+      <a href="{{ url_for('admin.admin_courses') }}" class="btn btn--ghost" style="text-align:center;">取消</a>
+    </div>
+  </div>
+</div>
+</form>
+{% endblock %}

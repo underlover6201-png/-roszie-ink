@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}服務條款 — Terms of Service{% endblock %}
+{% block meta_desc %}ROSZIE INK 服務條款，使用本網站及預約服務前請詳閱。{% endblock %}
+
+{% block extra_css %}
+<style>
+.legal-body { max-width: 760px; margin: 0 auto; font-size: var(--text-base); line-height: 1.9; color: var(--color-text-2); }
+.legal-body h2 { font-size: var(--text-xl); font-weight: 800; color: var(--color-text); margin: var(--sp-12) 0 var(--sp-4); padding-top: var(--sp-8); border-top: 1px solid var(--color-border-light); }
+.legal-body h2:first-of-type { border-top: none; margin-top: var(--sp-4); }
+.legal-body p { margin-bottom: var(--sp-5); }
+.legal-body ul { padding-left: var(--sp-8); margin-bottom: var(--sp-5); }
+.legal-body li { margin-bottom: var(--sp-2); }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="section">
+  <div class="container">
+
+    <div style="border-bottom: 1px solid var(--color-border); padding-bottom: var(--sp-8); margin-bottom: var(--sp-12);">
+      <span class="section-label">Legal</span>
+      <h1 style="font-size: var(--text-4xl); font-weight: 900; margin-top: var(--sp-4);">服務條款</h1>
+      <p class="ed-label" style="margin-top: var(--sp-4);">最後更新：2024 年 1 月</p>
+    </div>
+
+    <div class="legal-body">
+
+      <p>歡迎使用 ROSZIE INK（以下稱「本工作室」）的網站及服務。使用本網站即表示您同意以下服務條款。請在使用前仔細閱讀。</p>
+
+      <h2>一、服務說明</h2>
+      <p>本工作室透過網站提供刺青預約諮詢、師傅介紹、作品集展示及相關資訊服務。實際刺青服務須至工作室現場進行。</p>
+
+      <h2>二、預約條款</h2>
+      <ul>
+        <li>預約諮詢為免費服務，實際刺青收費以師傅與客人雙方確認為準。</li>
+        <li>提交預約表單後，師傅將於 2–3 個工作天內聯繫，請保持聯絡方式暢通。</li>
+        <li>如需取消或更改預約，請提前至少 48 小時通知。</li>
+        <li>爽約或未提前通知取消者，本工作室保留拒絕後續預約的權利。</li>
+      </ul>
+
+      <h2>三、年齡限制</h2>
+      <p>刺青服務僅限 18 歲以上成年人。18 歲以下人士須由父母或法定監護人書面同意並陪同到場。本工作室保留要求出示身分證明的權利。</p>
+
+      <h2>四、健康聲明</h2>
+      <p>客人須如實告知是否有以下狀況：</p>
+      <ul>
+        <li>對特定材料（如墨水成分）過敏</li>
+        <li>皮膚相關疾病</li>
+        <li>免疫系統問題</li>
+        <li>懷孕或哺乳期</li>
+        <li>血液凝固問題或服用抗凝血藥物</li>
+      </ul>
+      <p>如隱瞞相關健康資訊導致的任何問題，本工作室不負相關責任。</p>
+
+      <h2>五、智慧財產權</h2>
+      <p>本網站所有內容（包括設計圖稿、作品集圖片、文字）均受著作權保護，屬 ROSZIE INK 或相關師傅所有。未經書面授權，不得複製、散布或以其他方式使用。</p>
+
+      <h2>六、免責聲明</h2>
+      <p>本工作室盡力確保網站資訊的正確性，但不保證所有資訊完全準確或即時更新。師傅檔期、課程資訊等可能隨時變動，請以實際確認為準。</p>
+
+      <h2>七、條款修改</h2>
+      <p>本工作室保留隨時修改服務條款的權利。重大變更將於網站公告。繼續使用本網站即表示您接受修改後的條款。</p>
+
+      <h2>八、聯絡方式</h2>
+      <p>如對本服務條款有任何疑問，請透過以下方式聯繫我們：</p>
+      <p>Email：<a href="mailto:{{ site.email or 'info@roszieink.com' }}" style="text-decoration:underline;">{{ site.email or 'info@roszieink.com' }}</a></p>
+
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

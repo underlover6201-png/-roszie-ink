@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+{% block title %}預約諮詢 — Appointment{% endblock %}
+{% block meta_desc %}填寫預約諮詢表單，ROSZIE INK 師傅將盡快與您聯絡。{% endblock %}
+
+{% block extra_css %}
+<style>
+.appt-hero {
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--sp-32) 0 var(--sp-20);
+}
+.appt-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 0;
+  border-top: none;
+}
+@media (max-width: 768px) {
+  .appt-layout { grid-template-columns: 1fr; }
+}
+.appt-sidebar {
+  border-right: 1px solid var(--color-border);
+  padding: var(--sp-16) var(--sp-10) var(--sp-16) 0;
+}
+@media (max-width: 768px) {
+  .appt-sidebar { border-right: none; border-bottom: 1px solid var(--color-border); padding: var(--sp-8) 0; }
+}
+.appt-sidebar__note {
+  margin-top: var(--sp-8);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.8;
+}
+.appt-sidebar__note strong { color: var(--color-text); }
+.appt-form-col {
+  padding: var(--sp-16) 0 var(--sp-16) var(--sp-12);
+}
+@media (max-width: 768px) {
+  .appt-form-col { padding: var(--sp-8) 0; }
+}
+.form-section { margin-bottom: var(--sp-12); }
+.form-section-title {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: var(--sp-6);
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--color-border-light);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+}
+@media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+.field { display: flex; flex-direction: column; gap: var(--sp-2); margin-bottom: var(--sp-5); }
+.field__label { font-size: var(--text-sm); font-weight: 600; }
+.field__required { color: var(--color-error); margin-left: 2px; }
+.field__input, .field__select, .field__textarea {
+  width: 100%;
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--text-base);
+  font-family: var(--font-sans);
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border);
+  outline: none;
+  transition: border-color var(--ease-fast);
+  border-radius: var(--radius-sm);
+  box-sizing: border-box;
+}
+.field__input:focus, .field__select:focus, .field__textarea:focus {
+  border-color: var(--color-accent);
+}
+.field__textarea { resize: vertical; min-height: 120px; }
+.field__select { cursor: pointer; }
+.field__hint { font-size: var(--text-xs); color: var(--color-text-muted); }
+.artist-cards-select {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+}
+.artist-option { position: relative; }
+.artist-option input[type="radio"] {
+  position: absolute; opacity: 0; width: 0; height: 0;
+}
+.artist-option__label {
+  display: block;
+  padding: var(--sp-4);
+  border: 1px solid var(--color-border-light);
+  cursor: pointer;
+  transition: all var(--ease-fast);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+.artist-option input:checked + .artist-option__label {
+  border-color: var(--color-border);
+  background: var(--color-bg-2);
+  font-weight: 700;
+}
+.artist-option__label:hover { border-color: var(--color-border); }
+.form-submit { margin-top: var(--sp-10); border-top: 1px solid var(--color-border-light); padding-top: var(--sp-8); }
+.form-submit p { font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--sp-4); }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="appt-hero">
+  <div class="container">
+    <span class="section-label">Booking</span>
+    <h1 class="page-hero__title" style="margin-top: var(--sp-4);">預約<br>諮詢</h1>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+    <div class="appt-layout">
+
+      {# 左側說明 #}
+      <aside class="appt-sidebar">
+        <h2 style="font-size: var(--text-xl); font-weight: 800; margin-bottom: var(--sp-6);">預約流程</h2>
+        <ol style="list-style: none; padding: 0; counter-reset: steps;">
+          {% for step in [
+            ('填寫表單', '填寫下方諮詢表單，越詳細越好。'),
+            ('師傅聯絡', '師傅確認檔期後，會透過 Email 或 IG 與你聯繫。'),
+            ('確認諮詢', '約定諮詢時間，討論設計細節。'),
+            ('入墨', '確認設計稿後，安排刺青時間。')
+          ] %}
+          <li style="display: grid; grid-template-columns: 36px 1fr; gap: var(--sp-4); margin-bottom: var(--sp-6); counter-increment: steps;">
+            <div style="width:36px;height:36px;border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:var(--text-sm);flex-shrink:0;">
+              0{{ loop.index }}
+            </div>
+            <div>
+              <div style="font-weight:700;margin-bottom:var(--sp-1);">{{ step[0] }}</div>
+              <div style="font-size:var(--text-sm);color:var(--color-text-muted);">{{ step[1] }}</div>
+            </div>
+          </li>
+          {% endfor %}
+        </ol>
+        <div class="appt-sidebar__note">
+          <strong>注意事項：</strong><br>
+          提交表單後，請保持聯絡方式暢通。<br>
+          諮詢費用於預約時說明。<br>
+          18 歲以下須家長同意。
+        </div>
+      </aside>
+
+      {# 右側表單 #}
+      <div class="appt-form-col">
+        <form method="POST" action="{{ url_for('public.appointment') }}" id="appointment-form">
+
+          {# 客人資料 #}
+          <div class="form-section">
+            <div class="form-section-title">01 — 你的資料</div>
+
+            <div class="form-row">
+              <div class="field">
+                <label class="field__label" for="client_name">
+                  姓名 <span class="field__required">*</span>
+                </label>
+                <input class="field__input" type="text" id="client_name" name="client_name"
+                  required placeholder="請輸入姓名" value="{{ request.form.get('client_name', '') }}">
+              </div>
+              <div class="field">
+                <label class="field__label" for="client_email">
+                  Email <span class="field__required">*</span>
+                </label>
+                <input class="field__input" type="email" id="client_email" name="client_email"
+                  required placeholder="your@email.com" value="{{ request.form.get('client_email', '') }}">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label class="field__label" for="client_phone">電話（選填）</label>
+                <input class="field__input" type="tel" id="client_phone" name="client_phone"
+                  placeholder="0912-345-678" value="{{ request.form.get('client_phone', '') }}">
+              </div>
+              <div class="field">
+                <label class="field__label" for="client_instagram">Instagram（選填）</label>
+                <input class="field__input" type="text" id="client_instagram" name="client_instagram"
+                  placeholder="@yourhandle" value="{{ request.form.get('client_instagram', '') }}">
+              </div>
+            </div>
+          </div>
+
+          {# 選擇師傅 #}
+          {% if artists %}
+          <div class="form-section">
+            <div class="form-section-title">02 — 選擇師傅</div>
+            <div class="artist-cards-select">
+              <div class="artist-option">
+                <input type="radio" id="artist_any" name="artist_id" value=""
+                  {% if not request.form.get('artist_id') and not request.args.get('artist') %}checked{% endif %}>
+                <label for="artist_any" class="artist-option__label">不指定師傅</label>
+              </div>
+              {% for artist in artists %}
+              <div class="artist-option">
+                <input type="radio" id="artist_{{ artist.id }}" name="artist_id" value="{{ artist.id }}"
+                  {% if request.form.get('artist_id') == artist.id|string or request.args.get('artist') == artist.id|string %}checked{% endif %}>
+                <label for="artist_{{ artist.id }}" class="artist-option__label">{{ artist.name }}</label>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          {# 刺青資訊 #}
+          <div class="form-section">
+            <div class="form-section-title">03 — 刺青細節</div>
+
+            <div class="field">
+              <label class="field__label" for="placement">
+                刺青位置 <span class="field__required">*</span>
+              </label>
+              <input class="field__input" type="text" id="placement" name="placement"
+                required placeholder="例：左手前臂、右肩胛" value="{{ request.form.get('placement', '') }}">
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label class="field__label" for="size">尺寸範圍</label>
+                <select class="field__select" id="size" name="size">
+                  <option value="">請選擇</option>
+                  <option value="small" {% if request.form.get('size') == 'small' %}selected{% endif %}>小（手掌以下）</option>
+                  <option value="medium" {% if request.form.get('size') == 'medium' %}selected{% endif %}>中（手掌大小）</option>
+                  <option value="large" {% if request.form.get('size') == 'large' %}selected{% endif %}>大（超過手掌）</option>
+                  <option value="extra_large" {% if request.form.get('size') == 'extra_large' %}selected{% endif %}>特大（背部/大腿等）</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="field__label" for="color_preference">色彩偏好</label>
+                <select class="field__select" id="color_preference" name="color_preference">
+                  <option value="">請選擇</option>
+                  <option value="black_gray" {% if request.form.get('color_preference') == 'black_gray' %}selected{% endif %}>純黑灰</option>
+                  <option value="color" {% if request.form.get('color_preference') == 'color' %}selected{% endif %}>彩色</option>
+                  <option value="both" {% if request.form.get('color_preference') == 'both' %}selected{% endif %}>黑灰 + 彩色</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label class="field__label" for="style">風格描述</label>
+                <input class="field__input" type="text" id="style" name="style"
+                  placeholder="例：日式傳統、幾何、水墨" value="{{ request.form.get('style', '') }}">
+              </div>
+              <div class="field">
+                <label class="field__label" for="budget_range">預算範圍（TWD）</label>
+                <input class="field__input" type="text" id="budget_range" name="budget_range"
+                  placeholder="例：5,000–10,000" value="{{ request.form.get('budget_range', '') }}">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label class="field__label" for="preferred_date_start">希望開始日期</label>
+                <input class="field__input" type="date" id="preferred_date_start" name="preferred_date_start"
+                  value="{{ request.form.get('preferred_date_start', '') }}">
+              </div>
+              <div class="field">
+                <label class="field__label" for="preferred_date_end">希望結束日期</label>
+                <input class="field__input" type="date" id="preferred_date_end" name="preferred_date_end"
+                  value="{{ request.form.get('preferred_date_end', '') }}">
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="notes">設計想法與備註</label>
+              <textarea class="field__textarea" id="notes" name="notes"
+                placeholder="請描述你的設計構想、參考圖片連結、特別要求等">{{ request.form.get('notes', '') }}</textarea>
+            </div>
+          </div>
+
+          {# 送出 #}
+          <div class="form-submit">
+            <button type="submit" class="btn btn--primary" style="width: 100%;">
+              送出預約申請 &rarr;
+            </button>
+            <p>提交即表示你同意我們的<a href="{{ url_for('public.privacy') }}" style="text-decoration:underline;">隱私政策</a>。我們不會將你的資料分享給第三方。</p>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

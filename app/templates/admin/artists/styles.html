@@ -1,0 +1,55 @@
+{% extends 'admin/base.html' %}
+{% block title %}風格標籤{% endblock %}
+{% block page_title %}風格標籤管理{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+  <h1 class="admin-page-header__title">風格標籤</h1>
+  <a href="{{ url_for('admin.artists') }}" class="btn btn--ghost btn--sm">&larr; 師傅列表</a>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-8);align-items:start;">
+  <div>
+    <div style="background:var(--admin-sidebar);border:1px solid var(--admin-border);padding:var(--sp-6);">
+      <h3 style="font-size:var(--text-xs);font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:var(--sp-5);">新增風格</h3>
+      <form method="POST" style="display:flex;gap:var(--sp-3);">
+        <input type="hidden" name="action" value="create">
+        <input type="text" name="name" required placeholder="風格名稱（例：黑灰、日式）"
+               style="flex:1;padding:var(--sp-3);font-size:var(--text-sm);background:var(--admin-bg);border:1px solid var(--admin-border);color:var(--color-text);outline:none;">
+        <button type="submit" class="btn btn--primary btn--sm">新增</button>
+      </form>
+    </div>
+  </div>
+
+  <div style="background:var(--admin-sidebar);border:1px solid var(--admin-border);">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>名稱</th>
+          <th>Slug</th>
+          <th>使用師傅</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for style in styles %}
+        <tr>
+          <td style="font-weight:600;">{{ style.name }}</td>
+          <td style="font-size:var(--text-xs);color:var(--color-text-muted);">{{ style.slug }}</td>
+          <td style="text-align:center;">{{ style.artists | length }}</td>
+          <td>
+            <form method="POST" onsubmit="return confirm('確定刪除「{{ style.name }}」？');">
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="style_id" value="{{ style.id }}">
+              <button type="submit" style="font-size:var(--text-xs);font-weight:600;color:var(--color-error);background:none;border:none;cursor:pointer;padding:0;">刪除</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" style="text-align:center;color:var(--color-text-muted);padding:var(--sp-8);">尚無風格標籤</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

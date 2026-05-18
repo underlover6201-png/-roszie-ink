@@ -1,0 +1,78 @@
+/* ═══════════════════════════════════════════════════
+   ROSZIE INK - CSS 設計系統變數
+   白底、超大字、報紙格線、Swiss editorial
+   ═══════════════════════════════════════════════════ */
+
+:root {
+  /* ── 色彩系統 ─────────────────────────────────────── */
+  --color-bg:           #f2f2ee;
+  --color-bg-2:         #e8e8e4;
+  --color-bg-card:      #ebebе7;
+  --color-bg-input:     #ffffff;
+  --color-border:       #0a0a0a;
+  --color-border-light: #c8c8c2;
+  --color-text:         #0a0a0a;
+  --color-text-2:       #3a3a3a;
+  --color-text-muted:   #888880;
+  --color-accent:       #0a0a0a;
+  --color-accent-dim:   #3a3a3a;
+  --color-error:        #cc0000;
+  --color-success:      #006633;
+  --color-warning:      #cc8800;
+
+  /* ── 字型 ─────────────────────────────────────────── */
+  --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont,
+               'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* ── 流體字級（自動響應螢幕寬度）─────────────────── */
+  --text-xs:   clamp(0.7rem,  1.5vw, 0.8rem);
+  --text-sm:   clamp(0.85rem, 1.8vw, 0.95rem);
+  --text-base: clamp(1rem,    2vw,   1.1rem);
+  --text-lg:   clamp(1.1rem,  2.5vw, 1.3rem);
+  --text-xl:   clamp(1.3rem,  3vw,   1.6rem);
+  --text-2xl:  clamp(1.6rem,  4vw,   2.2rem);
+  --text-3xl:  clamp(2rem,    5vw,   3rem);
+  --text-4xl:  clamp(2.8rem,  6vw,   4.5rem);
+  --text-5xl:  clamp(3.5rem,  8vw,   7rem);
+  --text-hero: clamp(5rem,    13vw,  12rem);
+
+  /* ── 間距 ─────────────────────────────────────────── */
+  --sp-1:  0.25rem;
+  --sp-2:  0.5rem;
+  --sp-3:  0.75rem;
+  --sp-4:  1rem;
+  --sp-5:  1.25rem;
+  --sp-6:  1.5rem;
+  --sp-8:  2rem;
+  --sp-10: 2.5rem;
+  --sp-12: 3rem;
+  --sp-16: 4rem;
+  --sp-20: 5rem;
+  --sp-24: 6rem;
+  --sp-32: 8rem;
+  --sp-40: 10rem;
+
+  /* ── 過渡動畫 ─────────────────────────────────────── */
+  --ease-fast:   150ms ease;
+  --ease-base:   250ms ease;
+  --ease-slow:   450ms ease;
+  --ease-smooth: 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-bounce: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Z-Index ──────────────────────────────────────── */
+  --z-below:   -1;
+  --z-base:     0;
+  --z-above:   10;
+  --z-navbar: 100;
+  --z-modal:  200;
+  --z-toast:  300;
+
+  /* ── Layout ───────────────────────────────────────── */
+  --navbar-h:     68px;
+  --container-w:  1400px;
+  --container-px: clamp(1.5rem, 5vw, 4rem);
+  --radius-sm:    2px;
+  --radius:       4px;
+  --radius-lg:    8px;
+}

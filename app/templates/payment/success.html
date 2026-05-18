@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block title %}付款成功 — ROSZIE INK{% endblock %}
+
+{% block extra_css %}
+<style>
+.result-wrap {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--sp-16) var(--sp-8);
+}
+.result-icon {
+  font-size: 3rem;
+  margin-bottom: var(--sp-6);
+  line-height: 1;
+}
+.result-title {
+  font-size: var(--text-3xl);
+  font-weight: 900;
+  margin-bottom: var(--sp-4);
+}
+.result-sub {
+  font-size: var(--text-base);
+  color: var(--color-text-2);
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0 auto var(--sp-8);
+}
+.result-detail {
+  border: 1px solid var(--color-border);
+  padding: var(--sp-6) var(--sp-8);
+  margin-bottom: var(--sp-8);
+  text-align: left;
+  width: 100%;
+  max-width: 420px;
+}
+.result-detail__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--sp-2) 0;
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: var(--text-sm);
+  gap: var(--sp-4);
+}
+.result-detail__row:last-child { border-bottom: none; }
+.result-detail__label {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.result-detail__value { font-weight: 600; text-align: right; word-break: break-all; }
+.result-actions { display: flex; gap: var(--sp-4); flex-wrap: wrap; justify-content: center; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="result-wrap">
+
+      <div class="result-icon">✓</div>
+
+      <div class="section-label" style="margin-bottom: var(--sp-4);">Payment Successful</div>
+      <h1 class="result-title">付款成功！</h1>
+      <p class="result-sub">
+        感謝您的支持！我們已收到您的付款，確認信將寄至您的 Email，請注意查收。
+        如有任何問題，歡迎聯繫我們。
+      </p>
+
+      {% if payment %}
+      <div class="result-detail">
+        <div class="result-detail__row">
+          <span class="result-detail__label">訂單編號</span>
+          <span class="result-detail__value">{{ payment.trade_no }}</span>
+        </div>
+        <div class="result-detail__row">
+          <span class="result-detail__label">姓名</span>
+          <span class="result-detail__value">{{ payment.payer_name }}</span>
+        </div>
+        <div class="result-detail__row">
+          <span class="result-detail__label">Email</span>
+          <span class="result-detail__value">{{ payment.payer_email }}</span>
+        </div>
+        <div class="result-detail__row">
+          <span class="result-detail__label">金額</span>
+          <span class="result-detail__value">{{ payment.currency }} {{ '{:,.0f}'.format(payment.amount) }}</span>
+        </div>
+        {% if payment.ecpay_payment_method %}
+        <div class="result-detail__row">
+          <span class="result-detail__label">付款方式</span>
+          <span class="result-detail__value">{{ payment.ecpay_payment_method }}</span>
+        </div>
+        {% endif %}
+        {% if payment.paid_at %}
+        <div class="result-detail__row">
+          <span class="result-detail__label">付款時間</span>
+          <span class="result-detail__value">{{ payment.paid_at.strftime('%Y/%m/%d %H:%M') }}</span>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <div class="result-actions">
+        {% if payment and payment.payment_type.value == 'flash' %}
+          <a href="{{ url_for('public.shop') }}" class="btn btn--secondary">返回認領圖商城</a>
+        {% elif payment and payment.payment_type.value == 'course' %}
+          <a href="{{ url_for('public.courses') }}" class="btn btn--secondary">返回課程列表</a>
+        {% else %}
+          <a href="{{ url_for('public.home') }}" class="btn btn--secondary">返回首頁</a>
+        {% endif %}
+        <a href="{{ url_for('public.contact') }}" class="btn btn--ghost">聯絡我們</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

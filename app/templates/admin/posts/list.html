@@ -1,0 +1,83 @@
+{% extends 'admin/base.html' %}
+{% block title %}文章管理{% endblock %}
+{% block page_title %}文章管理{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+  <h1 class="admin-page-header__title">文章管理</h1>
+  <a href="{{ url_for('admin.post_create') }}" class="btn btn--primary btn--sm">+ 新增文章</a>
+</div>
+
+<div style="display:flex;gap:var(--sp-2);margin-bottom:var(--sp-6);">
+  <a href="{{ url_for('admin.posts') }}" style="padding:var(--sp-2) var(--sp-4);font-size:var(--text-xs);font-weight:600;border:1px solid;text-decoration:none;{% if not status_filter %}border-color:var(--color-text);color:var(--color-text);{% else %}border-color:var(--admin-border);color:var(--color-text-muted);{% endif %}">全部</a>
+  {% for s in PostStatus %}
+  <a href="{{ url_for('admin.posts', status=s.name) }}" style="padding:var(--sp-2) var(--sp-4);font-size:var(--text-xs);font-weight:600;border:1px solid;text-decoration:none;{% if status_filter == s.name %}border-color:var(--color-text);color:var(--color-text);{% else %}border-color:var(--admin-border);color:var(--color-text-muted);{% endif %}">
+    {{ {'draft':'草稿','published':'已發布','scheduled':'排程中'}[s.name] }}
+  </a>
+  {% endfor %}
+</div>
+
+<div class="admin-table-wrap">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>封面</th>
+        <th>標題</th>
+        <th>作者</th>
+        <th>分類</th>
+        <th>狀態</th>
+        <th>發布時間</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for post in posts.items %}
+      <tr>
+        <td>
+          {% if post.cover_thumb_url or post.cover_image_url %}
+          <img src="{{ post.cover_thumb_url or post.cover_image_url }}" alt=""
+               style="width:48px;height:36px;object-fit:cover;border:1px solid var(--admin-border);">
+          {% else %}
+          <div style="width:48px;height:36px;background:var(--admin-hover);border:1px solid var(--admin-border);"></div>
+          {% endif %}
+        </td>
+        <td>
+          <div style="font-weight:600;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ post.title }}</div>
+          <div style="font-size:var(--text-xs);color:var(--color-text-muted);">{{ post.slug }}</div>
+        </td>
+        <td style="font-size:var(--text-sm);">{{ post.author.username if post.author else '—' }}</td>
+        <td style="font-size:var(--text-xs);">{{ post.category.name if post.category else '—' }}</td>
+        <td>
+          {% set sm = {'draft':'badge--muted','published':'badge--active','scheduled':'badge--pending'} %}
+          {% set sl = {'draft':'草稿','published':'已發布','scheduled':'排程中'} %}
+          <span class="badge {{ sm.get(post.status.name,'badge--muted') }}">{{ sl.get(post.status.name, post.status.name) }}</span>
+        </td>
+        <td style="font-size:var(--text-xs);">{{ post.published_at.strftime('%Y/%m/%d') if post.published_at else '—' }}</td>
+        <td>
+          <div style="display:flex;gap:var(--sp-3);">
+            <a href="{{ url_for('admin.post_edit', post_id=post.id) }}" style="font-size:var(--text-xs);font-weight:600;color:var(--color-text);text-decoration:none;">編輯</a>
+            {% if post.status.name == 'published' %}
+            <a href="{{ url_for('public.post_detail', slug=post.slug) }}" target="_blank" style="font-size:var(--text-xs);color:var(--color-text-muted);text-decoration:none;">預覽↗</a>
+            {% endif %}
+            <form method="POST" action="{{ url_for('admin.post_delete', post_id=post.id) }}"
+                  onsubmit="return confirm('確定刪除文章「{{ post.title }}」？');" style="display:inline;">
+              <button type="submit" style="font-size:var(--text-xs);font-weight:600;color:var(--color-error);background:none;border:none;cursor:pointer;padding:0;">刪除</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" style="text-align:center;color:var(--color-text-muted);padding:var(--sp-12);">尚無文章</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if posts.pages > 1 %}
+<div style="display:flex;gap:var(--sp-2);justify-content:center;margin-top:var(--sp-6);">
+  {% if posts.has_prev %}<a href="{{ url_for('admin.posts', page=posts.prev_num, status=status_filter) }}" class="btn btn--ghost btn--sm">&larr;</a>{% endif %}
+  <span style="font-size:var(--text-sm);align-self:center;color:var(--color-text-muted);">第 {{ posts.page }} / {{ posts.pages }} 頁</span>
+  {% if posts.has_next %}<a href="{{ url_for('admin.posts', page=posts.next_num, status=status_filter) }}" class="btn btn--ghost btn--sm">&rarr;</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

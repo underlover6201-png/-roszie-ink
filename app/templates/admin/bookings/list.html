@@ -1,0 +1,89 @@
+{% extends 'admin/base.html' %}
+{% block title %}預約管理{% endblock %}
+{% block page_title %}預約管理{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+  <h1 class="admin-page-header__title">預約管理</h1>
+  <div style="display:flex;gap:var(--sp-3);">
+    <span style="font-size:var(--text-sm);color:var(--color-text-muted);align-self:center;">
+      共 {{ bookings.total }} 筆
+    </span>
+  </div>
+</div>
+
+{# 狀態篩選 #}
+<div style="display:flex;gap:var(--sp-2);margin-bottom:var(--sp-6);flex-wrap:wrap;">
+  <a href="{{ url_for('admin.bookings') }}"
+     style="padding:var(--sp-2) var(--sp-4);font-size:var(--text-xs);font-weight:600;border:1px solid;text-decoration:none;
+            {% if not status_filter %}border-color:var(--color-text);color:var(--color-text);{% else %}border-color:var(--admin-border);color:var(--color-text-muted);{% endif %}">
+    全部 ({{ bookings.total }})
+  </a>
+  {% for s in BookingStatus %}
+  <a href="{{ url_for('admin.bookings', status=s.name) }}"
+     style="padding:var(--sp-2) var(--sp-4);font-size:var(--text-xs);font-weight:600;border:1px solid;text-decoration:none;
+            {% if status_filter == s.name %}border-color:var(--color-text);color:var(--color-text);{% else %}border-color:var(--admin-border);color:var(--color-text-muted);{% endif %}">
+    {{ {'pending':'待處理','contacted':'已聯絡','scheduled':'已排程','completed':'已完成','cancelled':'已取消'}[s.name] }}
+    {% if s.name == 'pending' and pending_count %}<span style="background:var(--color-error);color:#fff;border-radius:10px;padding:0 5px;margin-left:2px;font-size:9px;">{{ pending_count }}</span>{% endif %}
+  </a>
+  {% endfor %}
+</div>
+
+<div class="admin-table-wrap">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>編號</th>
+        <th>客人</th>
+        <th>Email</th>
+        <th>師傅</th>
+        <th>位置</th>
+        <th>狀態</th>
+        <th>提交時間</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in bookings.items %}
+      <tr>
+        <td style="font-family:var(--font-mono);font-size:var(--text-xs);">{{ b.booking_number }}</td>
+        <td style="font-weight:600;">{{ b.client_name }}</td>
+        <td style="font-size:var(--text-xs);">{{ b.client_email }}</td>
+        <td>{{ b.artist.name if b.artist else '—' }}</td>
+        <td>{{ b.placement or '—' }}</td>
+        <td>
+          {% set badge_map = {'pending':'badge--pending','contacted':'badge--active','scheduled':'badge--active','completed':'badge--muted','cancelled':'badge--error'} %}
+          {% set label_map = {'pending':'待處理','contacted':'已聯絡','scheduled':'已排程','completed':'已完成','cancelled':'已取消'} %}
+          <span class="badge {{ badge_map.get(b.status.name, 'badge--muted') }}">{{ label_map.get(b.status.name, b.status.name) }}</span>
+        </td>
+        <td style="font-size:var(--text-xs);white-space:nowrap;">
+          {{ b.created_at.strftime('%Y/%m/%d %H:%M') if b.created_at else '—' }}
+        </td>
+        <td>
+          <a href="{{ url_for('admin.booking_detail', booking_id=b.id) }}"
+             style="font-size:var(--text-xs);font-weight:600;color:var(--color-text);text-decoration:none;">
+            查看 →
+          </a>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" style="text-align:center;color:var(--color-text-muted);padding:var(--sp-12);">目前沒有預約紀錄</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{# 分頁 #}
+{% if bookings.pages > 1 %}
+<div style="display:flex;gap:var(--sp-2);justify-content:center;margin-top:var(--sp-6);">
+  {% if bookings.has_prev %}
+  <a href="{{ url_for('admin.bookings', page=bookings.prev_num, status=status_filter) }}" class="btn btn--ghost btn--sm">&larr;</a>
+  {% endif %}
+  <span style="font-size:var(--text-sm);align-self:center;color:var(--color-text-muted);">第 {{ bookings.page }} / {{ bookings.pages }} 頁</span>
+  {% if bookings.has_next %}
+  <a href="{{ url_for('admin.bookings', page=bookings.next_num, status=status_filter) }}" class="btn btn--ghost btn--sm">&rarr;</a>
+  {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}429 — 請求過多{% endblock %}
+
+{% block content %}
+<div style="min-height: 80dvh; display:flex; align-items:center; justify-content:center; text-align:center; padding: var(--sp-8);">
+  <div>
+    <p style="font-size: var(--text-hero); font-weight:800; line-height:1; color: var(--color-border); letter-spacing:-0.05em;">429</p>
+    <h1 style="font-size: var(--text-2xl); font-weight:700; margin-top: var(--sp-4);">Slow Down</h1>
+    <p style="color: var(--color-text-muted); margin-top: var(--sp-4);">請求次數過多，請稍後再試。</p>
+    <a href="{{ url_for('public.home') }}" class="btn btn--ghost" style="margin-top: var(--sp-8);">
+      &larr; 回首頁
+    </a>
+  </div>
+</div>
+{% endblock %}

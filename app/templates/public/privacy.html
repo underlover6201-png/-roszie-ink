@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}隱私政策 — Privacy Policy{% endblock %}
+{% block meta_desc %}ROSZIE INK 隱私政策，說明我們如何收集、使用及保護您的個人資料。{% endblock %}
+
+{% block extra_css %}
+<style>
+.legal-body { max-width: 760px; margin: 0 auto; font-size: var(--text-base); line-height: 1.9; color: var(--color-text-2); }
+.legal-body h2 { font-size: var(--text-xl); font-weight: 800; color: var(--color-text); margin: var(--sp-12) 0 var(--sp-4); padding-top: var(--sp-8); border-top: 1px solid var(--color-border-light); }
+.legal-body h2:first-of-type { border-top: none; margin-top: var(--sp-4); }
+.legal-body p { margin-bottom: var(--sp-5); }
+.legal-body ul { padding-left: var(--sp-8); margin-bottom: var(--sp-5); }
+.legal-body li { margin-bottom: var(--sp-2); }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="section">
+  <div class="container">
+
+    <div style="border-bottom: 1px solid var(--color-border); padding-bottom: var(--sp-8); margin-bottom: var(--sp-12);">
+      <span class="section-label">Legal</span>
+      <h1 style="font-size: var(--text-4xl); font-weight: 900; margin-top: var(--sp-4);">隱私政策</h1>
+      <p class="ed-label" style="margin-top: var(--sp-4);">最後更新：2024 年 1 月</p>
+    </div>
+
+    <div class="legal-body">
+
+      <p>ROSZIE INK（以下稱「本工作室」）非常重視您的隱私權。本隱私政策說明我們如何收集、使用及保護您在使用本網站及服務時所提供的個人資料。</p>
+
+      <h2>一、收集的資料類型</h2>
+      <p>當您使用本網站時，我們可能收集以下資料：</p>
+      <ul>
+        <li><strong>聯絡資訊：</strong>姓名、電子郵件地址、電話號碼</li>
+        <li><strong>社群媒體帳號：</strong>Instagram 帳號（選填）</li>
+        <li><strong>預約資訊：</strong>刺青位置、尺寸、風格偏好、預算等</li>
+        <li><strong>電子報訂閱：</strong>電子郵件地址</li>
+        <li><strong>使用紀錄：</strong>瀏覽器類型、IP 位址、造訪頁面等（透過 Google Analytics）</li>
+      </ul>
+
+      <h2>二、資料使用目的</h2>
+      <p>我們收集的資料僅用於以下目的：</p>
+      <ul>
+        <li>處理並回覆您的預約諮詢</li>
+        <li>發送電子報（僅限您已訂閱者）</li>
+        <li>改善網站功能與使用者體驗</li>
+        <li>遵守法律義務</li>
+      </ul>
+
+      <h2>三、資料保護措施</h2>
+      <p>本工作室採取適當的技術與組織措施，保護您的個人資料不遭未授權存取、揭露、竄改或銷毀。所有敏感資料均經加密傳輸。</p>
+
+      <h2>四、資料分享</h2>
+      <p>本工作室不會將您的個人資料出售、交易或以其他方式移轉給第三方，除非：</p>
+      <ul>
+        <li>您明確同意</li>
+        <li>法律要求揭露</li>
+        <li>為提供服務所必要（例如電子郵件服務商）</li>
+      </ul>
+
+      <h2>五、Cookie 政策</h2>
+      <p>本網站使用 Cookie 改善使用體驗及進行匿名流量分析（Google Analytics）。您可透過瀏覽器設定拒絕 Cookie，但部分功能可能因此受限。</p>
+
+      <h2>六、您的權利</h2>
+      <p>依據適用法律，您有權：</p>
+      <ul>
+        <li>查詢我們持有的您的個人資料</li>
+        <li>要求更正不正確的資料</li>
+        <li>要求刪除您的個人資料</li>
+        <li>取消訂閱電子報</li>
+      </ul>
+      <p>如需行使上述權利，請透過 <a href="mailto:{{ site.email or 'info@roszieink.com' }}" style="text-decoration:underline;">{{ site.email or 'info@roszieink.com' }}</a> 聯繫我們。</p>
+
+      <h2>七、政策更新</h2>
+      <p>本工作室保留隨時修改本隱私政策的權利。重大變更將於網站公告。繼續使用本網站即表示您接受更新後的政策。</p>
+
+      <h2>八、聯絡方式</h2>
+      <p>如對本隱私政策有任何疑問，請透過以下方式聯繫我們：</p>
+      <p>Email：<a href="mailto:{{ site.email or 'info@roszieink.com' }}" style="text-decoration:underline;">{{ site.email or 'info@roszieink.com' }}</a></p>
+
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

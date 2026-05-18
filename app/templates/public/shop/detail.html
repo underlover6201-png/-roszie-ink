@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% block title %}{{ design.title }} — Flash Design{% endblock %}
+{% block meta_desc %}{{ design.description or (design.title + ' — 認領圖，限量一份，買斷即屬於你。') }}{% endblock %}
+
+{% block extra_css %}
+<style>
+.shop-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 460px;
+  gap: var(--sp-16);
+  align-items: start;
+}
+@media (max-width: 1024px) {
+  .shop-detail-layout { grid-template-columns: 1fr 380px; }
+}
+@media (max-width: 768px) {
+  .shop-detail-layout { grid-template-columns: 1fr; }
+}
+.design-image-wrap {
+  position: sticky;
+  top: calc(var(--navbar-h) + var(--sp-8));
+}
+.design-image {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  display: block;
+}
+.design-info-card {
+  border: 1px solid var(--color-border);
+  padding: var(--sp-8);
+}
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--sp-4) 0;
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: var(--text-sm);
+}
+.info-row:last-of-type { border-bottom: none; }
+.info-row__label { color: var(--color-text-muted); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; font-size: var(--text-xs); }
+.info-row__value { font-weight: 700; }
+.claim-btn {
+  width: 100%;
+  display: block;
+  text-align: center;
+  padding: var(--sp-5);
+  font-size: var(--text-base);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--color-text);
+  color: var(--color-bg);
+  border: 2px solid var(--color-text);
+  text-decoration: none;
+  transition: all var(--ease-fast);
+  margin-top: var(--sp-6);
+}
+.claim-btn:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+.claim-btn.is-disabled {
+  background: var(--color-bg-2);
+  color: var(--color-text-muted);
+  border-color: var(--color-border-light);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.claimed-notice {
+  text-align: center;
+  padding: var(--sp-6);
+  background: var(--color-bg-2);
+  border: 1px solid var(--color-border-light);
+  margin-top: var(--sp-6);
+}
+.price-display {
+  font-size: var(--text-4xl);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin: var(--sp-6) 0;
+}
+.price-currency {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  vertical-align: top;
+  margin-top: 8px;
+  display: inline-block;
+  margin-right: var(--sp-1);
+}
+.payment-note {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: 1.8;
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--color-border-light);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="section">
+  <div class="container">
+
+    <div style="margin-bottom: var(--sp-10);">
+      <a href="{{ url_for('public.shop') }}" class="ed-label" style="color: var(--color-text-muted);">&larr; 認領圖商城</a>
+      {% if design.artist %}
+        <span class="ed-label" style="margin-left: var(--sp-4);">{{ design.artist.name }}</span>
+      {% endif %}
+    </div>
+
+    <div class="shop-detail-layout">
+
+      {# 左：設計圖 #}
+      <div class="design-image-wrap">
+        <img class="design-image" src="{{ design.image_url }}" alt="{{ design.title }}" loading="eager">
+
+        {% if design.styles %}
+        <div style="display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-4);">
+          {% for style in design.styles %}
+          <span class="artist-card__tag">{{ style.name }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if design.description %}
+        <p style="margin-top: var(--sp-6); font-size: var(--text-sm); color: var(--color-text-2); line-height: 1.8;">
+          {{ design.description }}
+        </p>
+        {% endif %}
+      </div>
+
+      {# 右：資訊 + 認領 #}
+      <div>
+        <span class="section-label">Flash Design</span>
+        <h1 style="font-size: var(--text-4xl); font-weight: 900; line-height: 1.1; margin: var(--sp-3) 0 0;">
+          {{ design.title }}
+        </h1>
+
+        {% if not design.is_claimed %}
+        <div class="price-display">
+          <span class="price-currency">{{ design.currency }}</span>{{ '{:,.0f}'.format(design.price) }}
+        </div>
+        {% endif %}
+
+        {# 資訊卡 #}
+        <div class="design-info-card">
+          <div class="info-row">
+            <span class="info-row__label">狀態</span>
+            <span class="info-row__value" style="color: {% if design.is_claimed %}var(--color-error){% else %}var(--color-success){% endif %};">
+              {{ design.status_label }}
+            </span>
+          </div>
+          {% if design.artist %}
+          <div class="info-row">
+            <span class="info-row__label">設計師</span>
+            <span class="info-row__value">
+              <a href="{{ url_for('public.artist_detail', slug=design.artist.slug) }}" style="color: inherit;">
+                {{ design.artist.name }}
+              </a>
+            </span>
+          </div>
+          {% endif %}
+          {% if design.placement %}
+          <div class="info-row">
+            <span class="info-row__label">建議部位</span>
+            <span class="info-row__value">{{ design.placement }}</span>
+          </div>
+          {% endif %}
+          {% if design.size_note %}
+          <div class="info-row">
+            <span class="info-row__label">尺寸</span>
+            <span class="info-row__value">{{ design.size_note }}</span>
+          </div>
+          {% endif %}
+          {% if not design.is_claimed %}
+          <div class="info-row">
+            <span class="info-row__label">限量</span>
+            <span class="info-row__value">1 份（買斷，不重複）</span>
+          </div>
+          {% endif %}
+        </div>
+
+        {# 認領按鈕 / 已售出提示 #}
+        {% if design.is_claimed %}
+        <div class="claimed-notice">
+          <div style="font-size: var(--text-2xl); font-weight: 900; margin-bottom: var(--sp-3);">已認領</div>
+          <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--sp-4);">
+            這張圖已被認領。查看其他可認領的設計，或聯繫師傅討論客製化。
+          </p>
+          <a href="{{ url_for('public.shop') }}" class="btn btn--ghost">瀏覽其他設計</a>
+        </div>
+        {% else %}
+        <a href="{{ url_for('payment.flash_checkout', slug=design.slug) }}"
+           class="claim-btn">
+          立即認領這張圖 &rarr;
+        </a>
+        <p class="payment-note">
+          點擊後填寫資料並透過綠界金流安全付款。<br>
+          付款完成後，設計圖正式屬於你，限量 1 份不重複。<br>
+          <strong>付款方式：</strong>信用卡 / ATM 轉帳 / 超商代碼
+        </p>
+        {% endif %}
+
+        {# 說明 #}
+        <div style="margin-top: var(--sp-10); padding-top: var(--sp-8); border-top: 1px solid var(--color-border-light);">
+          <h3 style="font-size: var(--text-sm); font-weight: 800; margin-bottom: var(--sp-4); text-transform: uppercase; letter-spacing: 0.1em;">認領流程</h3>
+          <ol style="list-style: none; padding: 0;">
+            {% for step in ['點擊「立即認領」並填寫資料', '前往綠界安全付款頁完成付款', '付款成功，設計圖正式屬於你', '聯絡師傅安排刺青時間'] %}
+            <li style="display: flex; gap: var(--sp-4); margin-bottom: var(--sp-4); font-size: var(--text-sm); color: var(--color-text-2);">
+              <span style="font-weight: 900; flex-shrink: 0; color: var(--color-text);">0{{ loop.index }}.</span>
+              <span>{{ step }}</span>
+            </li>
+            {% endfor %}
+          </ol>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

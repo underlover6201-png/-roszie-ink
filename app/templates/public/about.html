@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}關於我們 — About ROSZIE INK{% endblock %}
+{% block meta_desc %}ROSZIE INK 的故事、理念與工作室介紹。{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero__inner">
+      <span class="section-label">About</span>
+      <h1 class="page-hero__title">ROSZIE<br>INK</h1>
+    </div>
+  </div>
+</section>
+
+{# 故事 #}
+<section class="section" style="border-top: 1px solid var(--color-border);">
+  <div class="container">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-20); align-items: center;">
+      <div class="reveal">
+        <span class="section-label" style="margin-bottom: var(--sp-4); display: block;">01 — Story</span>
+        <h2 style="font-size: var(--text-4xl); font-weight: 900; line-height: 1.1; margin-bottom: var(--sp-8);">
+          我們的<br>故事
+        </h2>
+        <p style="font-size: var(--text-base); color: var(--color-text-2); line-height: 1.9; margin-bottom: var(--sp-6);">
+          ROSZIE INK 成立於台北，是一間以精細工藝與個性設計為核心的刺青工作室。
+          我們相信每一個刺青都是獨特的語言，是佩戴者與世界的一種對話。
+        </p>
+        <p style="font-size: var(--text-base); color: var(--color-text-2); line-height: 1.9;">
+          工作室由對刺青充滿熱情的師傅們共同創辦，
+          致力於在安全、舒適的環境中，為每一位客人創作出真正屬於自己的作品。
+        </p>
+      </div>
+      <div class="reveal">
+        <div style="aspect-ratio: 3/4; background: var(--color-bg-2); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center;">
+          <span class="ed-label" style="color: var(--color-text-muted);">ROSZIE INK Studio</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# 理念 #}
+<section class="section" style="background: var(--color-bg-2); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);">
+  <div class="container">
+    <div style="text-align: center; max-width: 760px; margin: 0 auto;">
+      <span class="section-label" style="margin-bottom: var(--sp-6); display: block;">02 — Philosophy</span>
+      <blockquote style="font-size: var(--text-3xl); font-weight: 900; line-height: 1.2; margin: 0;">
+        "每一道線條，<br>都是一個決定。"
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+{# 核心價值 #}
+<section class="section">
+  <div class="container">
+    <div style="border-bottom: 1px solid var(--color-border); padding-bottom: var(--sp-4); margin-bottom: var(--sp-10);">
+      <span class="section-label">03 — Values</span>
+      <h2 class="section-title">我們的理念</h2>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0; border-left: 1px solid var(--color-border);">
+      {% for value in [
+        ('精細工藝', 'Craftsmanship', '我們對每一條線、每一個色塊都精益求精，追求完美的細節與持久的品質。'),
+        ('個性設計', 'Originality', '每件作品都是原創設計，我們與客人深度溝通，讓作品真正反映佩戴者的個性。'),
+        ('安全衛生', 'Safety First', '工作室嚴格遵守衛生標準，所有器材一次性使用，確保客人的安全與健康。'),
+        ('長期關係', 'Relationship', '我們視每一位客人為長期夥伴，從諮詢到完工，每個環節都全力以赴。')
+      ] %}
+      <div class="reveal" style="border-right: 1px solid var(--color-border); padding: var(--sp-10); border-bottom: 1px solid var(--color-border);">
+        <div class="ed-label" style="margin-bottom: var(--sp-2);">{{ value[1] }}</div>
+        <h3 style="font-size: var(--text-xl); font-weight: 800; margin-bottom: var(--sp-4);">{{ value[0] }}</h3>
+        <p style="font-size: var(--text-sm); color: var(--color-text-2); line-height: 1.8;">{{ value[2] }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# CTA #}
+<section class="section section--cta" style="border-top: 1px solid var(--color-border);">
+  <div class="container">
+    <div class="cta-block">
+      <div>
+        <span class="section-label">來找我們</span>
+        <h2 class="cta-block__title">Ready to<br>Start?</h2>
+      </div>
+      <div class="cta-block__action">
+        <p class="cta-block__desc">認識了我們，下一步就是預約諮詢。填寫表單，師傅會盡快與你聯繫。</p>
+        <div style="display: flex; gap: var(--sp-4); flex-wrap: wrap;">
+          <a href="{{ url_for('public.appointment') }}" class="btn btn--primary">預約諮詢 &rarr;</a>
+          <a href="{{ url_for('public.artists') }}" class="btn btn--ghost">認識師傅</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

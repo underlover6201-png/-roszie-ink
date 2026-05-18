@@ -1,0 +1,139 @@
+{% extends 'admin/base.html' %}
+{% block title %}預約 {{ booking.booking_number }}{% endblock %}
+{% block page_title %}預約詳情{% endblock %}
+
+{% block extra_css %}
+<style>
+.detail-grid { display:grid;grid-template-columns:1fr 340px;gap:var(--sp-8);align-items:start; }
+@media(max-width:900px){.detail-grid{grid-template-columns:1fr;}}
+.detail-section { background:var(--admin-sidebar);border:1px solid var(--admin-border);padding:var(--sp-6);margin-bottom:var(--sp-6); }
+.detail-section h3 { font-size:var(--text-xs);font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:var(--sp-5);padding-bottom:var(--sp-3);border-bottom:1px solid var(--admin-border); }
+.detail-row { display:grid;grid-template-columns:130px 1fr;gap:var(--sp-4);padding:var(--sp-3) 0;border-bottom:1px solid var(--admin-border);font-size:var(--text-sm); }
+.detail-row:last-child{border-bottom:none;}
+.detail-row__label{color:var(--color-text-muted);font-size:var(--text-xs);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;align-self:center;}
+.detail-row__value{color:var(--color-text);font-weight:500;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:var(--sp-6);">
+  <a href="{{ url_for('admin.bookings') }}" style="font-size:var(--text-sm);color:var(--color-text-muted);text-decoration:none;">&larr; 預約列表</a>
+</div>
+
+<div class="admin-page-header">
+  <div>
+    <h1 class="admin-page-header__title">{{ booking.booking_number }}</h1>
+    <p style="font-size:var(--text-sm);color:var(--color-text-muted);margin-top:var(--sp-1);">
+      提交於 {{ booking.created_at.strftime('%Y/%m/%d %H:%M') if booking.created_at else '—' }}
+    </p>
+  </div>
+  {% set badge_map = {'pending':'badge--pending','contacted':'badge--active','scheduled':'badge--active','completed':'badge--muted','cancelled':'badge--error'} %}
+  {% set label_map = {'pending':'待處理','contacted':'已聯絡','scheduled':'已排程','completed':'已完成','cancelled':'已取消'} %}
+  <span class="badge {{ badge_map.get(booking.status.name,'badge--muted') }}" style="font-size:var(--text-sm);padding:var(--sp-2) var(--sp-4);">
+    {{ label_map.get(booking.status.name, booking.status.name) }}
+  </span>
+</div>
+
+<div class="detail-grid">
+
+  {# 左：客人 + 刺青資訊 #}
+  <div>
+    <div class="detail-section">
+      <h3>客人資料</h3>
+      <div class="detail-row"><span class="detail-row__label">姓名</span><span class="detail-row__value">{{ booking.client_name }}</span></div>
+      <div class="detail-row"><span class="detail-row__label">Email</span><span class="detail-row__value"><a href="mailto:{{ booking.client_email }}" style="color:inherit;">{{ booking.client_email }}</a></span></div>
+      {% if booking.client_phone %}
+      <div class="detail-row"><span class="detail-row__label">電話</span><span class="detail-row__value"><a href="tel:{{ booking.client_phone }}" style="color:inherit;">{{ booking.client_phone }}</a></span></div>
+      {% endif %}
+      {% if booking.client_instagram %}
+      <div class="detail-row"><span class="detail-row__label">Instagram</span><span class="detail-row__value">{{ booking.client_instagram }}</span></div>
+      {% endif %}
+    </div>
+
+    <div class="detail-section">
+      <h3>刺青資訊</h3>
+      {% if booking.artist %}
+      <div class="detail-row"><span class="detail-row__label">師傅</span><span class="detail-row__value">{{ booking.artist.name }}</span></div>
+      {% endif %}
+      {% if booking.placement %}
+      <div class="detail-row"><span class="detail-row__label">位置</span><span class="detail-row__value">{{ booking.placement }}</span></div>
+      {% endif %}
+      {% if booking.size %}
+      <div class="detail-row"><span class="detail-row__label">尺寸</span><span class="detail-row__value">{{ {'small':'小','medium':'中','large':'大','extra_large':'特大'}.get(booking.size.name, booking.size.name) }}</span></div>
+      {% endif %}
+      {% if booking.color_preference %}
+      <div class="detail-row"><span class="detail-row__label">色彩</span><span class="detail-row__value">{{ {'black_gray':'黑灰','color':'彩色','both':'黑灰+彩色'}.get(booking.color_preference.name,'—') }}</span></div>
+      {% endif %}
+      {% if booking.style %}
+      <div class="detail-row"><span class="detail-row__label">風格</span><span class="detail-row__value">{{ booking.style }}</span></div>
+      {% endif %}
+      {% if booking.budget_range %}
+      <div class="detail-row"><span class="detail-row__label">預算</span><span class="detail-row__value">{{ booking.budget_range }}</span></div>
+      {% endif %}
+      {% if booking.preferred_date_start %}
+      <div class="detail-row"><span class="detail-row__label">希望日期</span><span class="detail-row__value">{{ booking.preferred_date_start }} {% if booking.preferred_date_end %}~ {{ booking.preferred_date_end }}{% endif %}</span></div>
+      {% endif %}
+    </div>
+
+    {% if booking.notes %}
+    <div class="detail-section">
+      <h3>備註</h3>
+      <p style="font-size:var(--text-sm);color:var(--color-text-2);line-height:1.8;white-space:pre-line;">{{ booking.notes }}</p>
+    </div>
+    {% endif %}
+  </div>
+
+  {# 右：操作 #}
+  <div>
+    <div class="detail-section">
+      <h3>更新狀態</h3>
+      <form method="POST">
+        <div class="field" style="margin-bottom:var(--sp-4);">
+          <label class="field__label" for="status" style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;">狀態</label>
+          <select class="field__select" id="status" name="status" style="background:var(--admin-bg);color:var(--color-text);border-color:var(--admin-border);">
+            {% for s in BookingStatus %}
+            <option value="{{ s.name }}" {% if s == booking.status %}selected{% endif %}>
+              {{ {'pending':'待處理','contacted':'已聯絡','scheduled':'已排程','completed':'已完成','cancelled':'已取消'}[s.name] }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field" style="margin-bottom:var(--sp-4);">
+          <label class="field__label" for="admin_notes" style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.08em;">內部備註</label>
+          <textarea class="field__textarea" id="admin_notes" name="admin_notes" rows="5"
+            style="background:var(--admin-bg);color:var(--color-text);border-color:var(--admin-border);resize:vertical;">{{ booking.admin_notes or '' }}</textarea>
+        </div>
+        <button type="submit" class="btn btn--primary" style="width:100%;">儲存變更</button>
+      </form>
+    </div>
+
+    <div class="detail-section">
+      <h3>快速聯絡</h3>
+      <div style="display:flex;flex-direction:column;gap:var(--sp-3);">
+        <a href="mailto:{{ booking.client_email }}?subject=您在 ROSZIE INK 的預約 {{ booking.booking_number }}"
+           class="btn btn--ghost" style="width:100%;text-align:center;font-size:var(--text-sm);">
+          ✉ 寄 Email
+        </a>
+        {% if booking.client_phone %}
+        <a href="tel:{{ booking.client_phone }}" class="btn btn--ghost" style="width:100%;text-align:center;font-size:var(--text-sm);">
+          ☎ 撥打電話
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3>危險操作</h3>
+      <form method="POST" action="{{ url_for('admin.booking_delete', booking_id=booking.id) }}"
+            onsubmit="return confirm('確定刪除此預約紀錄？此動作無法復原。')">
+        <button type="submit" style="width:100%;padding:var(--sp-3);font-size:var(--text-sm);font-weight:600;background:transparent;border:1px solid var(--color-error);color:var(--color-error);cursor:pointer;transition:all var(--ease-fast);"
+                onmouseover="this.style.background='var(--color-error)';this.style.color='#fff';"
+                onmouseout="this.style.background='transparent';this.style.color='var(--color-error)';">
+          刪除此預約
+        </button>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

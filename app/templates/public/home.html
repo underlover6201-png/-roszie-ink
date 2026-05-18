@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+{% block title %}ROSZIE INK — Tattoo Studio{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/home.css') }}">
+{% endblock %}
+
+{% block content %}
+
+{# ══════════════════════════════════════════════════
+   HERO — editorial poster style
+   ══════════════════════════════════════════════════ #}
+<section class="hero" id="hero">
+
+  {# 頂部 meta bar #}
+  <div class="hero__meta-bar">
+    <span class="hero__meta-item">Tattoo Studio</span>
+    <span class="hero__meta-item">Taipei &mdash; Taiwan</span>
+    <span class="hero__meta-item" id="local-time">—</span>
+  </div>
+
+  {# 主標題 + side info #}
+  <div class="hero__body">
+    <div class="hero__title-block">
+      <div class="hero__eyebrow">Est. 2024 &nbsp;/&nbsp; Fine Tattoo</div>
+      <h1 class="hero__title">
+        <span class="hero__title-line"><span>ROSZIE</span></span>
+        <span class="hero__title-line"><span>INK</span></span>
+      </h1>
+    </div>
+
+    <div class="hero__side-info">
+      <div>
+        <p class="hero__side-label">Studio</p>
+        <p class="hero__side-value">ROSZIE INK<br>Taipei, TW</p>
+      </div>
+      <div>
+        <p class="hero__side-label">Status</p>
+        <p class="hero__side-value" id="business-status-text">—</p>
+      </div>
+      <div>
+        <p class="hero__side-label">Booking</p>
+        <p class="hero__side-value">By appt.<br>only</p>
+      </div>
+    </div>
+  </div>
+
+  {# 底部 bar #}
+  <div class="hero__footer-bar">
+    <div class="hero__footer-cell">
+      <div class="info-bar">
+        <span class="info-bar__dot" id="status-dot"></span>
+        <span id="business-status">—</span>
+        &nbsp;·&nbsp;
+        <span id="local-time-2">—</span>
+      </div>
+    </div>
+    <div class="hero__footer-cell">
+      <a href="{{ url_for('public.appointment') }}" class="btn btn--primary">
+        Book a Consultation &rarr;
+      </a>
+    </div>
+  </div>
+
+</section>
+
+
+{# ══════════════════════════════════════════════════
+   FEATURED WORKS
+   ══════════════════════════════════════════════════ #}
+{% if featured_works %}
+<section class="section" id="portfolio">
+  <div class="container">
+
+    <div style="display:grid; grid-template-columns:1fr auto; align-items:end; border-bottom: 1px solid var(--color-border); padding-bottom: var(--sp-4); margin-bottom: var(--sp-10);">
+      <div>
+        <span class="section-label">01 — Portfolio</span>
+        <h2 class="section-title">Selected<br>Works</h2>
+      </div>
+      <a href="{{ url_for('public.portfolio') }}" class="btn btn--ghost">
+        View All &rarr;
+      </a>
+    </div>
+
+    <div class="works-grid">
+      {% for work in featured_works %}
+      <article class="work-card reveal" data-index="{{ loop.index }}">
+        <img
+          class="work-card__image lazyload"
+          data-src="{{ work.thumb_url or work.image_url }}"
+          alt="{{ work.title or '刺青作品' }}"
+          loading="lazy"
+        >
+        <div class="work-card__overlay">
+          <div class="work-card__meta">
+            {% if work.artist %}{{ work.artist.name }}{% endif %}
+            {% if work.body_part %}&nbsp;/&nbsp;{{ work.body_part }}{% endif %}
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endif %}
+
+
+{# ══════════════════════════════════════════════════
+   ARTISTS
+   ══════════════════════════════════════════════════ #}
+{% if artists %}
+<section class="section" id="artists">
+  <div class="container">
+
+    <div style="border-bottom: 1px solid var(--color-border); padding-bottom: var(--sp-4); margin-bottom: var(--sp-10);">
+      <span class="section-label">02 — Team</span>
+      <h2 class="section-title">Our Artists</h2>
+    </div>
+
+    <div class="artists-grid">
+      {% for artist in artists %}
+      <a class="artist-card reveal" href="{{ url_for('public.artist_detail', slug=artist.slug) }}">
+        <div class="artist-card__image-wrap">
+          {% if artist.avatar_url %}
+            <img
+              class="artist-card__image lazyload"
+              data-src="{{ artist.avatar_thumb_url or artist.avatar_url }}"
+              alt="{{ artist.name }}"
+              loading="lazy"
+            >
+          {% else %}
+            <div class="artist-card__placeholder">
+              <span>{{ artist.name[0] }}</span>
+            </div>
+          {% endif %}
+        </div>
+        <div class="artist-card__body">
+          <div class="artist-card__index ed-label">0{{ loop.index }}</div>
+          <h3 class="artist-card__name">{{ artist.name }}</h3>
+          {% if artist.styles %}
+          <div class="artist-card__styles">
+            {% for style in artist.styles[:3] %}
+              <span class="artist-card__tag">{{ style.name }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endif %}
+
+
+{# ══════════════════════════════════════════════════
+   MAGAZINE
+   ══════════════════════════════════════════════════ #}
+{% if latest_posts %}
+<section class="section" id="magazine">
+  <div class="container">
+
+    <div style="border-bottom: 1px solid var(--color-border); padding-bottom: var(--sp-4); margin-bottom: var(--sp-10);">
+      <span class="section-label">03 — Magazine</span>
+      <h2 class="section-title">Latest Stories</h2>
+    </div>
+
+    <div class="posts-grid">
+      {% for post in latest_posts %}
+      <article class="post-card reveal">
+        {% if post.cover_thumb_url or post.cover_image_url %}
+        <a href="{{ url_for('public.post_detail', slug=post.slug) }}" class="post-card__cover">
+          <img
+            class="lazyload"
+            data-src="{{ post.cover_thumb_url or post.cover_image_url }}"
+            alt="{{ post.title }}"
+            loading="lazy"
+          >
+        </a>
+        {% endif %}
+        <div class="post-card__meta">
+          <span class="post-card__index ed-label">0{{ loop.index }}</span>
+          {% if post.category %}
+            <span class="ed-label">{{ post.category.name }}</span>
+          {% endif %}
+        </div>
+        <h3 class="post-card__title">
+          <a href="{{ url_for('public.post_detail', slug=post.slug) }}">{{ post.title }}</a>
+        </h3>
+        <time class="post-card__date ed-label" datetime="{{ post.published_at.isoformat() if post.published_at else '' }}">
+          {{ post.published_at | date_tw if post.published_at else '' }}
+        </time>
+      </article>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endif %}
+
+
+{# ══════════════════════════════════════════════════
+   NEWSLETTER
+   ══════════════════════════════════════════════════ #}
+<section class="section section--newsletter">
+  <div class="container">
+    <div class="newsletter-block">
+      <div class="newsletter-block__left">
+        <span class="section-label">04 — Newsletter</span>
+        <h2 class="newsletter-block__title">Stay<br>In The<br>Loop.</h2>
+      </div>
+      <div class="newsletter-block__right">
+        <p class="newsletter-block__desc">
+          新作品、課程、工作室消息——<br>第一手收到。
+        </p>
+        <form class="newsletter-form" id="newsletter-form">
+          <div class="newsletter-form__row">
+            <input
+              type="email"
+              class="field__input newsletter-form__input"
+              id="newsletter-email"
+              placeholder="your@email.com"
+              required
+            >
+            <button type="submit" class="btn btn--primary">訂閱</button>
+          </div>
+          <p class="newsletter-msg ed-label" id="newsletter-msg" style="display:none; margin-top: var(--sp-3);"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/modules/info-bar.js') }}" defer></script>
+<script>
+  // Newsletter
+  document.getElementById('newsletter-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    const email = document.getElementById('newsletter-email').value;
+    const msg = document.getElementById('newsletter-msg');
+    btn.classList.add('is-loading');
+    try {
+      const res = await fetch('/api/v1/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      msg.textContent = data.message || data.error;
+      msg.style.display = 'block';
+      if (res.ok) document.getElementById('newsletter-email').value = '';
+    } catch {
+      msg.textContent = '發生錯誤，請稍後再試。';
+      msg.style.display = 'block';
+    } finally {
+      btn.classList.remove('is-loading');
+    }
+  });
+
+  // info bar 時間同步到 hero meta bar
+  function syncTime() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const el = document.getElementById('local-time');
+    const el2 = document.getElementById('local-time-2');
+    const t = `${h}:${m} TST`;
+    if (el) el.textContent = t;
+    if (el2) el2.textContent = t;
+  }
+  syncTime();
+  setInterval(syncTime, 30000);
+</script>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.meta_title or post.title }}{% endblock %}
+{% block meta_desc %}{{ post.meta_description or post.excerpt or '' }}{% endblock %}
+{% if post.og_image_url or post.cover_image_url %}
+{% block og_image %}{{ post.og_image_url or post.cover_image_url }}{% endblock %}
+{% endif %}
+
+{% block extra_css %}
+<style>
+.article-hero {
+  padding: var(--sp-24) 0 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.article-header {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 0 var(--sp-12);
+}
+.article-cover {
+  width: 100%;
+  max-height: 600px;
+  object-fit: cover;
+  display: block;
+}
+.article-body {
+  max-width: 720px;
+  margin: var(--sp-16) auto;
+  padding: 0;
+  font-size: var(--text-base);
+  line-height: 1.9;
+  color: var(--color-text-2);
+}
+.article-body h2, .article-body h3 {
+  color: var(--color-text);
+  font-weight: 800;
+  margin: var(--sp-10) 0 var(--sp-4);
+}
+.article-body h2 { font-size: var(--text-2xl); }
+.article-body h3 { font-size: var(--text-xl); }
+.article-body p { margin-bottom: var(--sp-6); }
+.article-body img { width: 100%; margin: var(--sp-8) 0; }
+.article-body ul, .article-body ol {
+  padding-left: var(--sp-8);
+  margin-bottom: var(--sp-6);
+}
+.article-body li { margin-bottom: var(--sp-2); }
+.article-body blockquote {
+  border-left: 3px solid var(--color-border);
+  padding-left: var(--sp-6);
+  margin: var(--sp-8) 0;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+.article-footer {
+  border-top: 1px solid var(--color-border);
+  margin-top: var(--sp-16);
+  padding-top: var(--sp-10);
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<article>
+
+  <header class="article-hero">
+    <div class="container">
+      <div class="article-header">
+        <div style="display:flex; align-items:center; gap: var(--sp-4); margin-bottom: var(--sp-6);">
+          <a href="{{ url_for('public.magazine') }}" class="ed-label" style="color: var(--color-text-muted);">&larr; Magazine</a>
+          {% if post.category %}
+            <span class="ed-label">{{ post.category.name }}</span>
+          {% endif %}
+        </div>
+        <h1 style="font-size: var(--text-4xl); font-weight: 900; line-height: 1.1; margin-bottom: var(--sp-6);">
+          {{ post.title }}
+        </h1>
+        {% if post.excerpt %}
+        <p style="font-size: var(--text-lg); color: var(--color-text-2); line-height: 1.7; margin-bottom: var(--sp-8);">
+          {{ post.excerpt }}
+        </p>
+        {% endif %}
+        <div style="display:flex; align-items:center; gap: var(--sp-6);">
+          {% if post.author %}
+          <span class="ed-label">By {{ post.author.display_name or post.author.username }}</span>
+          {% endif %}
+          {% if post.published_at %}
+          <time class="ed-label" datetime="{{ post.published_at.isoformat() }}">
+            {{ post.published_at | date_tw }}
+          </time>
+          {% endif %}
+          <span class="ed-label">{{ post.view_count }} 次閱讀</span>
+        </div>
+      </div>
+    </div>
+
+    {% if post.cover_image_url %}
+    <img class="article-cover" src="{{ post.cover_image_url }}" alt="{{ post.title }}" loading="lazy">
+    {% endif %}
+  </header>
+
+  <div class="container">
+    <div class="article-body">
+      {% if post.content %}
+        {{ post.content | safe }}
+      {% endif %}
+    </div>
+
+    <footer class="article-footer">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap: wrap; gap: var(--sp-4);">
+        <a href="{{ url_for('public.magazine') }}" class="btn btn--ghost">&larr; 回到 Magazine</a>
+        <a href="{{ url_for('public.appointment') }}" class="btn btn--primary">預約諮詢 &rarr;</a>
+      </div>
+    </footer>
+  </div>
+
+</article>
+
+{% endblock %}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  {# ── SEO ─────────────────────────────────────────── #}
+  <title>{% block title %}{{ site.name }}{% endblock %} | ROSZIE INK</title>
+  <meta name="description" content="{% block meta_desc %}ROSZIE INK — 刺青工作室。預約諮詢、師傅作品集。{% endblock %}">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{{ request.url }}">
+
+  {# ── Open Graph ───────────────────────────────────── #}
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="{{ site.name }}">
+  <meta property="og:title"       content="{% block og_title %}{{ self.title() }}{% endblock %}">
+  <meta property="og:description" content="{% block og_desc %}{{ self.meta_desc() }}{% endblock %}">
+  <meta property="og:image"       content="{% block og_image %}{{ url_for('static', filename='images/og-default.jpg', _external=True) }}{% endblock %}">
+  <meta property="og:url"         content="{{ request.url }}">
+  <meta name="twitter:card"       content="summary_large_image">
+
+  {# ── Favicon ──────────────────────────────────────── #}
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+  <link rel="apple-touch-icon"         href="{{ url_for('static', filename='images/apple-touch-icon.png') }}">
+
+  {# ── Fonts ────────────────────────────────────────── #}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  {# ── CSS ──────────────────────────────────────────── #}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/components/navbar.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/components/buttons.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/components/forms.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/components/cards.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/components/hero.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/components/page-components.css') }}">
+  {% block extra_css %}{% endblock %}
+
+  {# ── Google Analytics ─────────────────────────────── #}
+  {% if ga_id %}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_id }}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '{{ ga_id }}');
+  </script>
+  {% endif %}
+</head>
+
+<body>
+  {# ── Navbar ───────────────────────────────────────── #}
+  {% include 'components/navbar.html' %}
+
+  {# ── Flash messages ───────────────────────────────── #}
+  {% include 'components/flash_messages.html' %}
+
+  {# ── Main content ─────────────────────────────────── #}
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  {# ── Footer ───────────────────────────────────────── #}
+  {% include 'components/footer.html' %}
+
+  {# ── JS ───────────────────────────────────────────── #}
+  <script src="{{ url_for('static', filename='js/utils.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/modules/navbar.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/modules/scroll-animations.js') }}" defer></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

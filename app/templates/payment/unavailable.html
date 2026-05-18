@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}無法購買 — ROSZIE INK{% endblock %}
+
+{% block extra_css %}
+<style>
+.result-wrap {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--sp-16) var(--sp-8);
+}
+.result-icon {
+  font-size: 3rem;
+  margin-bottom: var(--sp-6);
+  line-height: 1;
+}
+.result-title {
+  font-size: var(--text-3xl);
+  font-weight: 900;
+  margin-bottom: var(--sp-4);
+}
+.result-sub {
+  font-size: var(--text-base);
+  color: var(--color-text-2);
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0 auto var(--sp-8);
+}
+.result-actions { display: flex; gap: var(--sp-4); flex-wrap: wrap; justify-content: center; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="result-wrap">
+
+      <div class="result-icon">—</div>
+
+      <div class="section-label" style="margin-bottom: var(--sp-4);">Unavailable</div>
+      <h1 class="result-title">目前無法購買</h1>
+      <p class="result-sub">{{ reason or '此項目目前無法購買，請稍後再試或聯絡我們。' }}</p>
+
+      <div class="result-actions">
+        {% if back_url %}
+          <a href="{{ back_url }}" class="btn btn--primary">返回</a>
+        {% else %}
+          <a href="{{ url_for('public.home') }}" class="btn btn--primary">返回首頁</a>
+        {% endif %}
+        <a href="{{ url_for('public.contact') }}" class="btn btn--ghost">聯絡我們</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,67 @@
+{# pagination: Flask-SQLAlchemy Pagination 物件 #}
+{% if pagination and pagination.pages > 1 %}
+<nav class="pagination" aria-label="分頁">
+  <ul class="pagination__list">
+    {% if pagination.has_prev %}
+      <li>
+        <a class="pagination__link" href="{{ url_for(request.endpoint, page=pagination.prev_num, **request.args) }}">
+          &larr; 上一頁
+        </a>
+      </li>
+    {% endif %}
+
+    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if page_num %}
+        <li>
+          <a class="pagination__link {% if page_num == pagination.page %}is-active{% endif %}"
+             href="{{ url_for(request.endpoint, page=page_num, **request.args) }}">
+            {{ page_num }}
+          </a>
+        </li>
+      {% else %}
+        <li><span class="pagination__ellipsis">…</span></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if pagination.has_next %}
+      <li>
+        <a class="pagination__link" href="{{ url_for(request.endpoint, page=pagination.next_num, **request.args) }}">
+          下一頁 &rarr;
+        </a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+
+<style>
+.pagination { margin-top: var(--sp-12); }
+.pagination__list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+.pagination__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding-inline: var(--sp-3);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  transition: all var(--ease-fast);
+}
+.pagination__link:hover,
+.pagination__link.is-active {
+  color: var(--color-text);
+  border-color: var(--color-text);
+}
+.pagination__ellipsis {
+  color: var(--color-text-muted);
+  padding-inline: var(--sp-2);
+}
+</style>
+{% endif %}

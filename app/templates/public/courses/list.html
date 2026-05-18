@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}Courses — 刺青課程{% endblock %}
+{% block meta_desc %}ROSZIE INK 刺青課程，由專業師傅親授，歡迎有興趣者報名。{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero__inner">
+      <span class="section-label">Learn</span>
+      <h1 class="page-hero__title">Tattoo<br>Courses</h1>
+      <p class="page-hero__desc">由師傅親授，從零開始學習刺青技藝。</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    {% if courses %}
+    <div style="display: grid; gap: 0; border-top: 1px solid var(--color-border);">
+      {% for course in courses %}
+      <article class="reveal" style="display: grid; grid-template-columns: 1fr auto; align-items: start; gap: var(--sp-8); padding: var(--sp-10) 0; border-bottom: 1px solid var(--color-border);">
+
+        <div>
+          {% if course.instructor %}
+          <span class="ed-label" style="margin-bottom: var(--sp-3); display: block;">
+            講師：{{ course.instructor.name }}
+          </span>
+          {% endif %}
+
+          <h2 style="font-size: var(--text-2xl); font-weight: 900; margin-bottom: var(--sp-4);">
+            <a href="{{ url_for('public.course_detail', slug=course.slug) }}" style="color: inherit;">
+              {{ course.title }}
+            </a>
+          </h2>
+
+          {% if course.description %}
+          <p style="font-size: var(--text-base); color: var(--color-text-2); line-height: 1.7; max-width: 600px; margin-bottom: var(--sp-6);">
+            {{ course.description[:200] }}{% if course.description|length > 200 %}…{% endif %}
+          </p>
+          {% endif %}
+
+          <div style="display: flex; gap: var(--sp-8); flex-wrap: wrap;">
+            {% if course.start_date %}
+            <div>
+              <div class="ed-label" style="margin-bottom: var(--sp-1);">開始日期</div>
+              <div style="font-size: var(--text-sm); font-weight: 600;">{{ course.start_date.strftime('%Y/%m/%d') }}</div>
+            </div>
+            {% endif %}
+            {% if course.location %}
+            <div>
+              <div class="ed-label" style="margin-bottom: var(--sp-1);">地點</div>
+              <div style="font-size: var(--text-sm); font-weight: 600;">{{ course.location }}</div>
+            </div>
+            {% endif %}
+            {% if course.max_students %}
+            <div>
+              <div class="ed-label" style="margin-bottom: var(--sp-1);">剩餘名額</div>
+              <div style="font-size: var(--text-sm); font-weight: 600;">
+                {% if course.is_full %}
+                  <span style="color: var(--color-error);">已額滿</span>
+                {% else %}
+                  {{ course.seats_remaining }} / {{ course.max_students }}
+                {% endif %}
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div style="text-align: right; flex-shrink: 0;">
+          {% if course.price %}
+          <div style="font-size: var(--text-2xl); font-weight: 900; margin-bottom: var(--sp-4);">
+            {{ course.currency or 'TWD' }}
+            {{ '{:,.0f}'.format(course.price) }}
+          </div>
+          {% endif %}
+          {% if course.is_full %}
+          <span class="btn btn--ghost" style="opacity: 0.5; cursor: not-allowed;">已額滿</span>
+          {% else %}
+          <a href="{{ url_for('public.course_detail', slug=course.slug) }}" class="btn btn--primary">
+            查看詳情 &rarr;
+          </a>
+          {% endif %}
+        </div>
+
+      </article>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="empty-state" style="padding: var(--sp-24) 0; text-align: center;">
+      <span class="section-label">敬請期待</span>
+      <p class="empty-state__text" style="margin-top: var(--sp-4);">目前沒有開放中的課程，新課程即將推出。</p>
+      <p style="margin-top: var(--sp-6);">
+        <a href="{{ url_for('public.home') }}#newsletter" class="btn btn--ghost">訂閱電子報獲得第一手通知</a>
+      </p>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}

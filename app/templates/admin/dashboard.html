@@ -1,0 +1,87 @@
+{% extends 'admin/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+  <h1 class="admin-page-header__title">概覽</h1>
+</div>
+
+{# ── 統計卡片 ────────────────────────────────────── #}
+<div class="admin-stats">
+  <div class="admin-stat">
+    <p class="admin-stat__label">待處理預約</p>
+    <p class="admin-stat__value">{{ pending_count }}</p>
+    <p class="admin-stat__sub">需要回覆</p>
+  </div>
+  <div class="admin-stat">
+    <p class="admin-stat__label">本月總預約</p>
+    <p class="admin-stat__value">{{ total_bookings }}</p>
+    <p class="admin-stat__sub">累計</p>
+  </div>
+  <div class="admin-stat">
+    <p class="admin-stat__label">活躍師傅</p>
+    <p class="admin-stat__value">{{ artists_count }}</p>
+  </div>
+  <div class="admin-stat">
+    <p class="admin-stat__label">文章數</p>
+    <p class="admin-stat__value">{{ posts_count }}</p>
+  </div>
+</div>
+
+{# ── 最近預約 ────────────────────────────────────── #}
+<section>
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: var(--sp-4);">
+    <h2 style="font-size: var(--text-base); font-weight:600; letter-spacing:0.05em;">最近預約</h2>
+    <a href="#" class="btn btn--ghost btn--sm">查看全部</a>
+  </div>
+
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>預約編號</th>
+          <th>客人</th>
+          <th>師傅</th>
+          <th>部位</th>
+          <th>狀態</th>
+          <th>時間</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for booking in recent_bookings %}
+        <tr>
+          <td style="font-family: var(--font-mono); font-size: var(--text-xs);">
+            {{ booking.booking_number }}
+          </td>
+          <td>
+            <div style="font-weight:500; color: var(--color-text);">{{ booking.client_name }}</div>
+            <div style="font-size: var(--text-xs); color: var(--color-text-muted);">{{ booking.client_email }}</div>
+          </td>
+          <td>{{ booking.artist.name if booking.artist else '—' }}</td>
+          <td>{{ booking.placement or '—' }}</td>
+          <td>
+            <span class="badge badge--{% if booking.status.value == 'pending' %}pending{% elif booking.status.value == 'completed' %}active{% elif booking.status.value == 'cancelled' %}error{% else %}muted{% endif %}">
+              {{ booking.status_label }}
+            </span>
+          </td>
+          <td style="font-size: var(--text-xs); color: var(--color-text-muted); white-space: nowrap;">
+            {{ booking.created_at | datetime_tw }}
+          </td>
+          <td>
+            <a href="#" class="btn btn--text btn--sm">查看</a>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" style="text-align:center; color: var(--color-text-muted); padding: var(--sp-8);">
+            目前還沒有預約
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

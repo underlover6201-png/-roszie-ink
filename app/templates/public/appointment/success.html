@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}預約成功 — Appointment Confirmed{% endblock %}
+
+{% block content %}
+
+<section class="section" style="min-height: 70vh; display: flex; align-items: center;">
+  <div class="container">
+    <div style="max-width: 640px; margin: 0 auto; text-align: center; padding: var(--sp-20) 0;">
+
+      <div style="font-size: var(--text-4xl); font-weight: 900; letter-spacing: -0.02em; margin-bottom: var(--sp-6);">
+        &#10003;
+      </div>
+
+      <span class="section-label">Booking Received</span>
+      <h1 style="font-size: var(--text-4xl); font-weight: 900; line-height: 1.1; margin: var(--sp-4) 0 var(--sp-8);">
+        預約申請<br>已送出
+      </h1>
+
+      {% if booking_number %}
+      <div style="display: inline-block; border: 1px solid var(--color-border); padding: var(--sp-3) var(--sp-6); margin-bottom: var(--sp-8);">
+        <span class="ed-label" style="display: block; margin-bottom: var(--sp-1);">預約編號</span>
+        <strong style="font-size: var(--text-lg); letter-spacing: 0.05em;">{{ booking_number }}</strong>
+      </div>
+      {% endif %}
+
+      <p style="font-size: var(--text-base); color: var(--color-text-2); line-height: 1.8; margin-bottom: var(--sp-10);">
+        感謝你的預約！我們已收到你的申請，師傅確認檔期後，<br>
+        會盡快透過 Email 與你聯繫，通常在 2–3 個工作天內回覆。<br><br>
+        如果有急迫問題，歡迎直接透過 Instagram 聯繫我們。
+      </p>
+
+      <div style="display: flex; gap: var(--sp-4); justify-content: center; flex-wrap: wrap;">
+        <a href="{{ url_for('public.home') }}" class="btn btn--ghost">&larr; 回到首頁</a>
+        <a href="{{ url_for('public.portfolio') }}" class="btn btn--primary">瀏覽作品集 &rarr;</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

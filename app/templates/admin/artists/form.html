@@ -1,0 +1,149 @@
+{% extends 'admin/base.html' %}
+{% block title %}{% if artist %}編輯師傅{% else %}新增師傅{% endif %}{% endblock %}
+{% block page_title %}{% if artist %}編輯師傅 — {{ artist.name }}{% else %}新增師傅{% endif %}{% endblock %}
+
+{% block extra_css %}
+<style>
+.form-grid { display:grid;grid-template-columns:1fr 320px;gap:var(--sp-8);align-items:start; }
+@media(max-width:900px){.form-grid{grid-template-columns:1fr;}}
+.admin-form-section { background:var(--admin-sidebar);border:1px solid var(--admin-border);padding:var(--sp-6);margin-bottom:var(--sp-6); }
+.admin-form-section h3 { font-size:var(--text-xs);font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:var(--sp-5);padding-bottom:var(--sp-3);border-bottom:1px solid var(--admin-border); }
+.field { display:flex;flex-direction:column;gap:var(--sp-2);margin-bottom:var(--sp-4); }
+.field__label { font-size:var(--text-xs);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-muted); }
+.field__input, .field__select, .field__textarea {
+  background:var(--admin-bg);color:var(--color-text);border:1px solid var(--admin-border);
+  padding:var(--sp-3);font-size:var(--text-sm);font-family:var(--font-sans);outline:none;width:100%;box-sizing:border-box;
+  transition:border-color var(--ease-fast);
+}
+.field__input:focus,.field__select:focus,.field__textarea:focus{border-color:var(--color-text);}
+.field__textarea{resize:vertical;min-height:100px;}
+.style-checkboxes{display:flex;flex-wrap:wrap;gap:var(--sp-2);}
+.style-checkbox-label{display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-2) var(--sp-3);border:1px solid var(--admin-border);cursor:pointer;font-size:var(--text-xs);font-weight:600;transition:all var(--ease-fast);}
+.style-checkbox-label:hover{border-color:var(--color-text);}
+.style-checkbox-label input:checked + span, .style-checkbox-label:has(input:checked){border-color:var(--color-text);background:var(--admin-hover);}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-3) 0;border-bottom:1px solid var(--admin-border);}
+.toggle-row:last-child{border-bottom:none;}
+.toggle-label{font-size:var(--text-sm);font-weight:500;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:var(--sp-6);">
+  <a href="{{ url_for('admin.artists') }}" style="font-size:var(--text-sm);color:var(--color-text-muted);text-decoration:none;">&larr; 師傅列表</a>
+</div>
+
+<form method="POST">
+<div class="form-grid">
+
+  {# 左：主要資訊 #}
+  <div>
+    <div class="admin-form-section">
+      <h3>基本資料</h3>
+      <div class="field">
+        <label class="field__label" for="name">姓名 *</label>
+        <input class="field__input" type="text" id="name" name="name" required
+               value="{{ artist.name if artist else '' }}" placeholder="師傅姓名">
+      </div>
+      <div class="field">
+        <label class="field__label" for="slug">Slug（網址用）</label>
+        <input class="field__input" type="text" id="slug" name="slug"
+               value="{{ artist.slug if artist else '' }}" placeholder="自動產生，可手動修改">
+      </div>
+      <div class="field">
+        <label class="field__label" for="bio">個人介紹</label>
+        <textarea class="field__textarea" id="bio" name="bio" rows="5"
+                  placeholder="師傅的背景、風格介紹…">{{ artist.bio if artist else '' }}</textarea>
+      </div>
+    </div>
+
+    <div class="admin-form-section">
+      <h3>社群媒體</h3>
+      <div class="field">
+        <label class="field__label" for="instagram_url">Instagram URL</label>
+        <input class="field__input" type="url" id="instagram_url" name="instagram_url"
+               value="{{ artist.instagram_url or '' }}" placeholder="https://instagram.com/...">
+      </div>
+      <div class="field">
+        <label class="field__label" for="tiktok_url">TikTok URL</label>
+        <input class="field__input" type="url" id="tiktok_url" name="tiktok_url"
+               value="{{ artist.tiktok_url or '' }}" placeholder="https://tiktok.com/@...">
+      </div>
+      <div class="field">
+        <label class="field__label" for="facebook_url">Facebook URL</label>
+        <input class="field__input" type="url" id="facebook_url" name="facebook_url"
+               value="{{ artist.facebook_url or '' }}" placeholder="https://facebook.com/...">
+      </div>
+      <div class="field">
+        <label class="field__label" for="website_url">個人網站</label>
+        <input class="field__input" type="url" id="website_url" name="website_url"
+               value="{{ artist.website_url or '' }}" placeholder="https://...">
+      </div>
+    </div>
+
+    <div class="admin-form-section">
+      <h3>照片 URL</h3>
+      <div class="field">
+        <label class="field__label" for="avatar_url">大頭照 URL</label>
+        <input class="field__input" type="url" id="avatar_url" name="avatar_url"
+               value="{{ artist.avatar_url or '' }}" placeholder="https://...">
+      </div>
+      <div class="field">
+        <label class="field__label" for="avatar_thumb_url">縮圖 URL（選填）</label>
+        <input class="field__input" type="url" id="avatar_thumb_url" name="avatar_thumb_url"
+               value="{{ artist.avatar_thumb_url or '' }}" placeholder="https://...（留空則使用大頭照）">
+      </div>
+      {% if artist and artist.avatar_url %}
+      <img src="{{ artist.avatar_thumb_url or artist.avatar_url }}" alt="preview"
+           style="width:80px;height:80px;object-fit:cover;border:1px solid var(--admin-border);margin-top:var(--sp-2);">
+      {% endif %}
+    </div>
+  </div>
+
+  {# 右：設定 + 風格 #}
+  <div>
+    <div class="admin-form-section">
+      <h3>設定</h3>
+      <div class="toggle-row">
+        <span class="toggle-label">啟用</span>
+        <label style="display:flex;align-items:center;gap:var(--sp-2);cursor:pointer;">
+          <input type="checkbox" name="is_active" value="1"
+                 {% if not artist or artist.is_active %}checked{% endif %}
+                 style="width:16px;height:16px;">
+          <span style="font-size:var(--text-xs);color:var(--color-text-muted);">顯示於前台</span>
+        </label>
+      </div>
+      <div style="padding:var(--sp-3) 0;">
+        <label class="field__label" style="display:block;margin-bottom:var(--sp-2);">排序</label>
+        <input class="field__input" type="number" name="sort_order"
+               value="{{ artist.sort_order if artist else 0 }}" min="0" style="width:100px;">
+        <span style="font-size:var(--text-xs);color:var(--color-text-muted);margin-left:var(--sp-2);">數字越小越前面</span>
+      </div>
+    </div>
+
+    {% if all_styles %}
+    <div class="admin-form-section">
+      <h3>刺青風格</h3>
+      <div class="style-checkboxes">
+        {% for style in all_styles %}
+        <label class="style-checkbox-label">
+          <input type="checkbox" name="style_ids" value="{{ style.id }}"
+                 {% if artist and style in artist.styles %}checked{% endif %}
+                 style="width:14px;height:14px;">
+          <span>{{ style.name }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <div style="display:flex;gap:var(--sp-3);">
+      <button type="submit" class="btn btn--primary" style="flex:1;">
+        {% if artist %}儲存變更{% else %}建立師傅{% endif %}
+      </button>
+      <a href="{{ url_for('admin.artists') }}" class="btn btn--ghost">取消</a>
+    </div>
+  </div>
+
+</div>
+</form>
+{% endblock %}

@@ -1,0 +1,134 @@
+/* ═══════════════════════════════════════════════════
+   Navbar - Swiss editorial minimal
+   ═══════════════════════════════════════════════════ */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-navbar);
+  height: var(--navbar-h);
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  padding-inline: var(--container-px);
+}
+
+.navbar__inner {
+  width: 100%;
+  max-width: var(--container-w);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-8);
+}
+
+/* ── Logo ─────────────────────────────────────────── */
+.navbar__logo {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+/* ── Nav links ────────────────────────────────────── */
+.navbar__menu {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+}
+
+.navbar__link {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  transition: color var(--ease-fast);
+  padding-bottom: 1px;
+  border-bottom: 1px solid transparent;
+}
+
+.navbar__link:hover,
+.navbar__link.is-active {
+  color: var(--color-text);
+  border-bottom-color: var(--color-text);
+}
+
+/* ── CTA ──────────────────────────────────────────── */
+.navbar__cta {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-bg);
+  background: var(--color-text);
+  padding: var(--sp-2) var(--sp-5);
+  transition: opacity var(--ease-fast);
+}
+
+.navbar__cta:hover {
+  opacity: 0.75;
+}
+
+/* ── Hamburger ────────────────────────────────────── */
+.navbar__toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  width: 28px;
+}
+
+.navbar__toggle span {
+  display: block;
+  height: 1px;
+  background: var(--color-text);
+  transition: transform var(--ease-base), opacity var(--ease-base);
+  transform-origin: center;
+}
+
+.navbar__toggle.is-open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.navbar__toggle.is-open span:nth-child(2) { opacity: 0; }
+.navbar__toggle.is-open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+/* ── Mobile ───────────────────────────────────────── */
+@media (max-width: 900px) {
+  .navbar__toggle { display: flex; }
+
+  .navbar__menu {
+    position: fixed;
+    top: var(--navbar-h);
+    left: 0; right: 0; bottom: 0;
+    background: var(--color-bg);
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--sp-6);
+    transform: translateX(100%);
+    transition: transform var(--ease-smooth);
+    padding: var(--sp-12);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .navbar__menu.is-open { transform: translateX(0); }
+
+  .navbar__link {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .navbar__link:hover { border-bottom: none; }
+
+  .navbar__cta {
+    font-size: var(--text-sm);
+    padding: var(--sp-3) var(--sp-8);
+  }
+}

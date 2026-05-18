@@ -1,0 +1,173 @@
+{% extends 'admin/base.html' %}
+{% block title %}{% if design %}編輯認領圖{% else %}上架新設計{% endif %}{% endblock %}
+{% block page_title %}{% if design %}編輯認領圖{% else %}上架新設計{% endif %}{% endblock %}
+
+{% block extra_css %}
+<style>
+.form-grid{display:grid;grid-template-columns:1fr 300px;gap:var(--sp-8);align-items:start;}
+@media(max-width:1024px){.form-grid{grid-template-columns:1fr;}}
+.admin-form-section{background:var(--admin-sidebar);border:1px solid var(--admin-border);padding:var(--sp-6);margin-bottom:var(--sp-6);}
+.admin-form-section h3{font-size:var(--text-xs);font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:var(--sp-5);padding-bottom:var(--sp-3);border-bottom:1px solid var(--admin-border);}
+.field{display:flex;flex-direction:column;gap:var(--sp-2);margin-bottom:var(--sp-4);}
+.field__label{font-size:var(--text-xs);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-muted);}
+.field__input,.field__select,.field__textarea{background:var(--admin-bg);color:var(--color-text);border:1px solid var(--admin-border);padding:var(--sp-3);font-size:var(--text-sm);font-family:var(--font-sans);outline:none;width:100%;box-sizing:border-box;transition:border-color var(--ease-fast);}
+.field__input:focus,.field__select:focus,.field__textarea:focus{border-color:var(--color-text);}
+.field__textarea{resize:vertical;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);}
+.style-checkboxes{display:flex;flex-wrap:wrap;gap:var(--sp-2);}
+.style-checkbox-label{display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-2) var(--sp-3);border:1px solid var(--admin-border);cursor:pointer;font-size:var(--text-xs);font-weight:600;transition:border-color var(--ease-fast);}
+.style-checkbox-label:hover{border-color:var(--color-text);}
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:var(--sp-6);">
+  <a href="{{ url_for('admin.flash_designs') }}" style="font-size:var(--text-sm);color:var(--color-text-muted);text-decoration:none;">&larr; 認領圖列表</a>
+</div>
+
+<form method="POST">
+<div class="form-grid">
+  <div>
+    <div class="admin-form-section">
+      <h3>設計資訊</h3>
+      <div class="field">
+        <label class="field__label" for="artist_id">師傅 *</label>
+        <select class="field__select" id="artist_id" name="artist_id" required>
+          <option value="">請選擇師傅</option>
+          {% for artist in all_artists %}
+          <option value="{{ artist.id }}" {% if design and design.artist_id == artist.id %}selected{% endif %}>{{ artist.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="title">標題 *</label>
+        <input class="field__input" type="text" id="title" name="title" required
+               value="{{ design.title if design else '' }}" placeholder="設計名稱">
+      </div>
+      <div class="field">
+        <label class="field__label" for="slug">Slug</label>
+        <input class="field__input" type="text" id="slug" name="slug"
+               value="{{ design.slug if design else '' }}" placeholder="自動產生">
+      </div>
+      <div class="field">
+        <label class="field__label" for="description">說明</label>
+        <textarea class="field__textarea" id="description" name="description" rows="3"
+                  placeholder="設計描述、靈感來源…">{{ design.description or '' }}</textarea>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label class="field__label" for="placement">建議部位</label>
+          <input class="field__input" type="text" id="placement" name="placement"
+                 value="{{ design.placement or '' }}" placeholder="例：手臂、腳踝">
+        </div>
+        <div class="field">
+          <label class="field__label" for="size_note">尺寸說明</label>
+          <input class="field__input" type="text" id="size_note" name="size_note"
+                 value="{{ design.size_note or '' }}" placeholder="例：約 8×8 cm">
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-form-section">
+      <h3>圖片</h3>
+      <div class="field">
+        <label class="field__label" for="image_url">設計圖 URL *</label>
+        <input class="field__input" type="url" id="image_url" name="image_url" required
+               value="{{ design.image_url if design else '' }}" placeholder="https://...">
+      </div>
+      <div class="field">
+        <label class="field__label" for="thumb_url">縮圖 URL（選填）</label>
+        <input class="field__input" type="url" id="thumb_url" name="thumb_url"
+               value="{{ design.thumb_url or '' }}" placeholder="https://...">
+      </div>
+      {% if design and design.image_url %}
+      <img src="{{ design.image_url }}" alt="preview"
+           style="width:100%;max-height:200px;object-fit:contain;border:1px solid var(--admin-border);background:var(--admin-hover);margin-top:var(--sp-2);">
+      {% endif %}
+    </div>
+
+    {% if all_styles %}
+    <div class="admin-form-section">
+      <h3>風格標籤</h3>
+      <div class="style-checkboxes">
+        {% for style in all_styles %}
+        <label class="style-checkbox-label">
+          <input type="checkbox" name="style_ids" value="{{ style.id }}"
+                 {% if design and style in design.styles %}checked{% endif %}
+                 style="width:14px;height:14px;">
+          <span>{{ style.name }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div>
+    <div class="admin-form-section">
+      <h3>售價</h3>
+      <div class="form-row">
+        <div class="field">
+          <label class="field__label" for="price">售價 *</label>
+          <input class="field__input" type="number" id="price" name="price" min="0" step="1" required
+                 value="{{ design.price if design and design.price else '' }}" placeholder="0">
+        </div>
+        <div class="field">
+          <label class="field__label" for="currency">幣別</label>
+          <select class="field__select" id="currency" name="currency">
+            <option value="TWD" {% if not design or design.currency == 'TWD' %}selected{% endif %}>TWD</option>
+            <option value="USD" {% if design and design.currency == 'USD' %}selected{% endif %}>USD</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-form-section">
+      <h3>設定</h3>
+      <div style="display:flex;flex-direction:column;gap:var(--sp-3);">
+        <label style="display:flex;align-items:center;gap:var(--sp-3);cursor:pointer;padding:var(--sp-2) 0;border-bottom:1px solid var(--admin-border);">
+          <input type="checkbox" name="is_published" value="1"
+                 {% if not design or design.is_published %}checked{% endif %}
+                 style="width:16px;height:16px;">
+          <div>
+            <div style="font-size:var(--text-sm);font-weight:600;">公開顯示</div>
+            <div style="font-size:var(--text-xs);color:var(--color-text-muted);">顯示於商城</div>
+          </div>
+        </label>
+        {% if design %}
+        <label style="display:flex;align-items:center;gap:var(--sp-3);cursor:pointer;padding:var(--sp-2) 0;">
+          <input type="checkbox" name="is_claimed" value="1"
+                 {% if design.is_claimed %}checked{% endif %}
+                 style="width:16px;height:16px;">
+          <div>
+            <div style="font-size:var(--text-sm);font-weight:600;color:var(--color-warning);">標記為已認領</div>
+            <div style="font-size:var(--text-xs);color:var(--color-text-muted);">會在商城顯示「已認領」</div>
+          </div>
+        </label>
+        {% endif %}
+      </div>
+      <div style="margin-top:var(--sp-4);">
+        <label class="field__label" style="display:block;margin-bottom:var(--sp-2);">排序</label>
+        <input class="field__input" type="number" name="sort_order"
+               value="{{ design.sort_order if design else 0 }}" min="0" style="width:80px;">
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:var(--sp-3);">
+      <button type="submit" class="btn btn--primary">{% if design %}儲存變更{% else %}上架設計{% endif %}</button>
+      <a href="{{ url_for('admin.flash_designs') }}" class="btn btn--ghost" style="text-align:center;">取消</a>
+    </div>
+
+    {% if design %}
+    <div style="margin-top:var(--sp-4);padding:var(--sp-4);border:1px solid var(--admin-border);">
+      <p style="font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:var(--sp-3);">前台連結</p>
+      <a href="{{ url_for('public.shop_detail', slug=design.slug) }}" target="_blank"
+         style="font-size:var(--text-xs);font-weight:600;color:var(--color-text);text-decoration:none;word-break:break-all;">
+        /shop/{{ design.slug }} ↗
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+</form>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'admin/base.html' %}
+{% block title %}課程管理{% endblock %}
+{% block page_title %}課程管理{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+  <h1 class="admin-page-header__title">課程管理</h1>
+  <a href="{{ url_for('admin.course_create') }}" class="btn btn--primary btn--sm">+ 新增課程</a>
+</div>
+
+<div class="admin-table-wrap">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>課程名稱</th>
+        <th>講師</th>
+        <th>售價</th>
+        <th>日期</th>
+        <th>名額</th>
+        <th>狀態</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for course in courses %}
+      <tr>
+        <td>
+          <div style="font-weight:600;">{{ course.title }}</div>
+          <div style="font-size:var(--text-xs);color:var(--color-text-muted);">{{ course.slug }}</div>
+        </td>
+        <td>{{ course.instructor.name if course.instructor else '—' }}</td>
+        <td>
+          {% if course.price %}
+          <span style="font-weight:700;">{{ course.currency }} {{ '{:,.0f}'.format(course.price) }}</span>
+          {% else %}—{% endif %}
+        </td>
+        <td style="font-size:var(--text-xs);">
+          {{ course.start_date.strftime('%Y/%m/%d') if course.start_date else '—' }}
+        </td>
+        <td style="text-align:center;">
+          {% if course.max_students %}
+            {{ course.current_students }}/{{ course.max_students }}
+            {% if course.is_full %}<span class="badge badge--error" style="margin-left:4px;">額滿</span>{% endif %}
+          {% else %}無限制{% endif %}
+        </td>
+        <td>
+          {% set sm = {'draft':'badge--muted','open':'badge--active','closed':'badge--pending','completed':'badge--muted'} %}
+          {% set sl = {'draft':'草稿','open':'開放中','closed':'已截止','completed':'已結束'} %}
+          <span class="badge {{ sm.get(course.status.name,'badge--muted') }}">{{ sl.get(course.status.name, course.status.name) }}</span>
+        </td>
+        <td>
+          <div style="display:flex;gap:var(--sp-3);">
+            <a href="{{ url_for('admin.course_edit', course_id=course.id) }}" style="font-size:var(--text-xs);font-weight:600;color:var(--color-text);text-decoration:none;">編輯</a>
+            <form method="POST" action="{{ url_for('admin.course_delete', course_id=course.id) }}"
+                  onsubmit="return confirm('確定刪除課程「{{ course.title }}」？');" style="display:inline;">
+              <button type="submit" style="font-size:var(--text-xs);font-weight:600;color:var(--color-error);background:none;border:none;cursor:pointer;padding:0;">刪除</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" style="text-align:center;color:var(--color-text-muted);padding:var(--sp-12);">尚無課程</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

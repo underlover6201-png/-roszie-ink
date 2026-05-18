@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block title %}Magazine — 雜誌{% endblock %}
+{% block meta_desc %}ROSZIE INK 雜誌，刺青文化、師傅故事、創作分享。{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero__inner">
+      <span class="section-label">03 — Magazine</span>
+      <h1 class="page-hero__title">Stories &<br>Culture</h1>
+      <p class="page-hero__desc">刺青不只是藝術，是一段故事。</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    {% if posts.items %}
+
+    {# 第一篇大圖 #}
+    {% set first = posts.items[0] %}
+    {% if loop is not defined or posts.page == 1 %}
+    <article class="post-featured reveal" style="margin-bottom: var(--sp-16); border-bottom: 1px solid var(--color-border); padding-bottom: var(--sp-16);">
+      {% if first.cover_image_url %}
+      <a href="{{ url_for('public.post_detail', slug=first.slug) }}" class="post-featured__cover" style="display:block; margin-bottom: var(--sp-8); overflow:hidden;">
+        <img src="{{ first.cover_image_url }}" alt="{{ first.title }}" loading="lazy"
+          style="width:100%; max-height: 560px; object-fit: cover;">
+      </a>
+      {% endif %}
+      <div style="display:grid; grid-template-columns: 1fr auto; align-items:end; gap: var(--sp-8);">
+        <div>
+          {% if first.category %}
+          <span class="ed-label" style="margin-bottom: var(--sp-3); display:block;">{{ first.category.name }}</span>
+          {% endif %}
+          <h2 style="font-size: var(--text-3xl); font-weight: 900; line-height: 1.15; margin-bottom: var(--sp-4);">
+            <a href="{{ url_for('public.post_detail', slug=first.slug) }}" style="color:inherit;">{{ first.title }}</a>
+          </h2>
+          {% if first.excerpt %}
+          <p style="font-size: var(--text-base); color: var(--color-text-2); line-height: 1.7; max-width: 640px;">
+            {{ first.excerpt }}
+          </p>
+          {% endif %}
+        </div>
+        <div style="text-align: right; flex-shrink: 0;">
+          <time class="ed-label" datetime="{{ first.published_at.isoformat() if first.published_at else '' }}">
+            {{ first.published_at | date_tw if first.published_at else '' }}
+          </time>
+          <div style="margin-top: var(--sp-4);">
+            <a href="{{ url_for('public.post_detail', slug=first.slug) }}" class="btn btn--ghost">閱讀全文 &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </article>
+    {% endif %}
+
+    {# 其餘文章網格 #}
+    {% set rest = posts.items[1:] if posts.page == 1 else posts.items %}
+    {% if rest %}
+    <div class="posts-grid">
+      {% for post in rest %}
+      <article class="post-card reveal">
+        {% if post.cover_thumb_url or post.cover_image_url %}
+        <a href="{{ url_for('public.post_detail', slug=post.slug) }}" class="post-card__cover" style="display:block; overflow:hidden; margin-bottom: var(--sp-4);">
+          <img
+            src="{{ post.cover_thumb_url or post.cover_image_url }}"
+            alt="{{ post.title }}"
+            loading="lazy"
+            style="width:100%; aspect-ratio:4/3; object-fit:cover;"
+          >
+        </a>
+        {% endif %}
+        <div class="post-card__meta" style="margin-bottom: var(--sp-3);">
+          <span class="post-card__index ed-label">0{{ loop.index }}</span>
+          {% if post.category %}
+            <span class="ed-label">{{ post.category.name }}</span>
+          {% endif %}
+        </div>
+        <h3 class="post-card__title" style="font-size: var(--text-lg); font-weight: 800; line-height: 1.3; margin-bottom: var(--sp-2);">
+          <a href="{{ url_for('public.post_detail', slug=post.slug) }}" style="color:inherit;">{{ post.title }}</a>
+        </h3>
+        {% if post.excerpt %}
+        <p style="font-size: var(--text-sm); color: var(--color-text-2); line-height: 1.7; margin-bottom: var(--sp-3);">
+          {{ post.excerpt[:100] }}{% if post.excerpt|length > 100 %}…{% endif %}
+        </p>
+        {% endif %}
+        <time class="post-card__date ed-label" datetime="{{ post.published_at.isoformat() if post.published_at else '' }}">
+          {{ post.published_at | date_tw if post.published_at else '' }}
+        </time>
+      </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% include 'components/pagination.html' with context %}
+
+    {% else %}
+    <div class="empty-state">
+      <p class="empty-state__text">文章準備中，敬請期待。</p>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}

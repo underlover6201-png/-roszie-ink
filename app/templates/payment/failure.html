@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}付款未完成 — ROSZIE INK{% endblock %}
+
+{% block extra_css %}
+<style>
+.result-wrap {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--sp-16) var(--sp-8);
+}
+.result-icon {
+  font-size: 3rem;
+  margin-bottom: var(--sp-6);
+  line-height: 1;
+}
+.result-title {
+  font-size: var(--text-3xl);
+  font-weight: 900;
+  margin-bottom: var(--sp-4);
+}
+.result-sub {
+  font-size: var(--text-base);
+  color: var(--color-text-2);
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0 auto var(--sp-8);
+}
+.result-msg {
+  background: #fff0f0;
+  border: 1px solid var(--color-error);
+  color: var(--color-error);
+  padding: var(--sp-3) var(--sp-5);
+  font-size: var(--text-sm);
+  margin-bottom: var(--sp-8);
+  max-width: 420px;
+  width: 100%;
+}
+.result-actions { display: flex; gap: var(--sp-4); flex-wrap: wrap; justify-content: center; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="result-wrap">
+
+      <div class="result-icon">✕</div>
+
+      <div class="section-label" style="margin-bottom: var(--sp-4);">Payment Failed</div>
+      <h1 class="result-title">付款未完成</h1>
+      <p class="result-sub">
+        付款過程中發生了問題，您的訂單尚未成立，請勿重複付款。
+        如需協助，請聯繫我們或稍後再試。
+      </p>
+
+      {% if rtn_msg %}
+      <div class="result-msg">{{ rtn_msg }}</div>
+      {% endif %}
+
+      <div class="result-actions">
+        {% if payment and payment.payment_type.value == 'flash' %}
+          <a href="{{ url_for('public.shop') }}" class="btn btn--primary">返回認領圖商城</a>
+        {% elif payment and payment.payment_type.value == 'course' %}
+          <a href="{{ url_for('public.courses') }}" class="btn btn--primary">返回課程列表</a>
+        {% else %}
+          <a href="{{ url_for('public.home') }}" class="btn btn--primary">返回首頁</a>
+        {% endif %}
+        <a href="{{ url_for('public.contact') }}" class="btn btn--ghost">聯絡我們</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

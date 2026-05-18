@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block title %}{{ course.meta_title or course.title }} — 課程{% endblock %}
+{% block meta_desc %}{{ course.meta_description or course.description or '' }}{% endblock %}
+
+{% block extra_css %}
+<style>
+.course-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--sp-12);
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .course-layout { grid-template-columns: 1fr; }
+}
+.course-sidebar {
+  position: sticky;
+  top: calc(var(--navbar-h) + var(--sp-8));
+  border: 1px solid var(--color-border);
+  padding: var(--sp-8);
+}
+.course-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--sp-4) 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+.course-info-row:last-of-type { border-bottom: none; }
+.course-content { font-size: var(--text-base); line-height: 1.9; color: var(--color-text-2); }
+.course-content h2, .course-content h3 { color: var(--color-text); font-weight: 800; margin: var(--sp-8) 0 var(--sp-3); }
+.course-content p { margin-bottom: var(--sp-5); }
+.course-content ul, .course-content ol { padding-left: var(--sp-8); margin-bottom: var(--sp-5); }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="section">
+  <div class="container">
+
+    <div style="margin-bottom: var(--sp-10); padding-bottom: var(--sp-6); border-bottom: 1px solid var(--color-border);">
+      <a href="{{ url_for('public.courses') }}" class="ed-label" style="color: var(--color-text-muted);">&larr; 所有課程</a>
+      {% if course.instructor %}
+        <span class="ed-label" style="margin-left: var(--sp-4);">{{ course.instructor.name }}</span>
+      {% endif %}
+    </div>
+
+    <div class="course-layout">
+
+      {# 主內容 #}
+      <div>
+        {% if course.cover_image_url %}
+        <img src="{{ course.cover_image_url }}" alt="{{ course.title }}" loading="lazy"
+          style="width: 100%; max-height: 480px; object-fit: cover; margin-bottom: var(--sp-10);">
+        {% endif %}
+
+        <h1 style="font-size: var(--text-4xl); font-weight: 900; line-height: 1.1; margin-bottom: var(--sp-6);">
+          {{ course.title }}
+        </h1>
+
+        {% if course.description %}
+        <p style="font-size: var(--text-lg); color: var(--color-text-2); line-height: 1.7; margin-bottom: var(--sp-10); padding-bottom: var(--sp-10); border-bottom: 1px solid var(--color-border);">
+          {{ course.description }}
+        </p>
+        {% endif %}
+
+        {% if course.content %}
+        <div class="course-content">{{ course.content | safe }}</div>
+        {% endif %}
+      </div>
+
+      {# 側邊報名卡 #}
+      <aside class="course-sidebar">
+        {% if course.price %}
+        <div style="font-size: var(--text-3xl); font-weight: 900; margin-bottom: var(--sp-6);">
+          {{ course.currency or 'TWD' }} {{ '{:,.0f}'.format(course.price) }}
+        </div>
+        {% endif %}
+
+        <div>
+          {% if course.start_date %}
+          <div class="course-info-row">
+            <span class="ed-label">開始日期</span>
+            <span style="font-weight: 600;">{{ course.start_date.strftime('%Y/%m/%d') }}</span>
+          </div>
+          {% endif %}
+          {% if course.end_date %}
+          <div class="course-info-row">
+            <span class="ed-label">結束日期</span>
+            <span style="font-weight: 600;">{{ course.end_date.strftime('%Y/%m/%d') }}</span>
+          </div>
+          {% endif %}
+          {% if course.location %}
+          <div class="course-info-row">
+            <span class="ed-label">地點</span>
+            <span style="font-weight: 600;">{{ course.location }}</span>
+          </div>
+          {% endif %}
+          {% if course.max_students %}
+          <div class="course-info-row">
+            <span class="ed-label">名額</span>
+            <span style="font-weight: 600;">
+              {% if course.is_full %}
+                <span style="color: var(--color-error);">已額滿</span>
+              {% else %}
+                剩 {{ course.seats_remaining }} / {{ course.max_students }}
+              {% endif %}
+            </span>
+          </div>
+          {% endif %}
+          {% if course.instructor %}
+          <div class="course-info-row">
+            <span class="ed-label">講師</span>
+            <span style="font-weight: 600;">{{ course.instructor.name }}</span>
+          </div>
+          {% endif %}
+        </div>
+
+        <div style="margin-top: var(--sp-8);">
+          {% if course.is_full %}
+            <button class="btn btn--ghost" style="width:100%; opacity:0.5; cursor:not-allowed;" disabled>已額滿</button>
+          {% elif not course.price %}
+            <a href="mailto:{{ site.email or 'info@roszieink.com' }}?subject=報名課程：{{ course.title }}"
+              class="btn btn--primary" style="width:100%; display:block; text-align:center;">
+              聯繫報名 &rarr;
+            </a>
+            <p style="font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--sp-3); text-align: center;">
+              尚未開放線上報名，請 Email 聯繫
+            </p>
+          {% else %}
+            <a href="{{ url_for('payment.course_checkout', slug=course.slug) }}"
+              class="btn btn--primary" style="width:100%; display:block; text-align:center;">
+              立即報名 &rarr;
+            </a>
+            <p style="font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--sp-3); text-align: center;">
+              線上安全付款，由綠界金流提供
+            </p>
+          {% endif %}
+        </div>
+      </aside>
+
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

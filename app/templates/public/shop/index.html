@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% block title %}Flash Design Shop — 認領圖商城{% endblock %}
+{% block meta_desc %}ROSZIE INK 認領圖商城。每個設計限量一份，買斷即屬於你。{% endblock %}
+
+{% block extra_css %}
+<style>
+.shop-filter {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+  padding: var(--sp-6) 0;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--sp-10);
+}
+.filter-label { font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-text-muted); }
+.filter-btn {
+  padding: var(--sp-2) var(--sp-5);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border: 1px solid var(--color-border-light);
+  text-decoration: none;
+  color: var(--color-text-muted);
+  transition: all var(--ease-fast);
+}
+.filter-btn:hover, .filter-btn.is-active {
+  border-color: var(--color-border);
+  color: var(--color-text);
+  background: var(--color-bg-2);
+}
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1px;
+  background: var(--color-border);
+}
+.design-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: var(--color-bg);
+  position: relative;
+  transition: background var(--ease-fast);
+}
+.design-card:hover { background: var(--color-bg-2); }
+.design-card.is-claimed { cursor: default; }
+.design-card__img-wrap {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--color-bg-2);
+}
+.design-card__img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--ease-smooth);
+}
+.design-card:not(.is-claimed):hover .design-card__img-wrap img {
+  transform: scale(1.04);
+}
+.design-card__claimed-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(242, 242, 238, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.design-card__claimed-badge {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: var(--sp-2) var(--sp-5);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+.design-card__body {
+  padding: var(--sp-5) var(--sp-6);
+  border-top: 1px solid var(--color-border);
+}
+.design-card__artist { margin-bottom: var(--sp-2); }
+.design-card__title {
+  font-size: var(--text-base);
+  font-weight: 800;
+  margin-bottom: var(--sp-3);
+  line-height: 1.3;
+}
+.design-card__meta { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+.design-card__price {
+  font-size: var(--text-lg);
+  font-weight: 900;
+  color: var(--color-text);
+}
+.design-card__tag {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: var(--sp-1) var(--sp-2);
+  border: 1px solid var(--color-border-light);
+  color: var(--color-text-muted);
+}
+.shop-stats {
+  display: flex;
+  gap: var(--sp-10);
+  margin-bottom: var(--sp-6);
+}
+.shop-stat { text-align: center; }
+.shop-stat__num { font-size: var(--text-3xl); font-weight: 900; display: block; }
+.shop-stat__label { font-size: var(--text-xs); color: var(--color-text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero__inner">
+      <span class="section-label">Flash Design Shop</span>
+      <h1 class="page-hero__title">認領圖<br>商城</h1>
+      <p class="page-hero__desc">每個設計限量一份，買斷即屬於你，只有你能刺這張圖。</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    {# 統計 #}
+    {% set available = designs | selectattr('is_claimed', 'equalto', false) | list %}
+    {% set claimed = designs | selectattr('is_claimed', 'equalto', true) | list %}
+    <div class="shop-stats" style="margin-bottom: var(--sp-8);">
+      <div class="shop-stat">
+        <span class="shop-stat__num">{{ available | length }}</span>
+        <span class="shop-stat__label">可認領</span>
+      </div>
+      <div class="shop-stat">
+        <span class="shop-stat__num">{{ claimed | length }}</span>
+        <span class="shop-stat__label">已認領</span>
+      </div>
+      <div class="shop-stat">
+        <span class="shop-stat__num">{{ designs | length }}</span>
+        <span class="shop-stat__label">全部設計</span>
+      </div>
+    </div>
+
+    {# 師傅篩選 #}
+    {% if artists | length > 1 %}
+    <div class="shop-filter">
+      <span class="filter-label">師傅：</span>
+      <a href="{{ url_for('public.shop') }}" class="filter-btn {% if not active_artist %}is-active{% endif %}">全部</a>
+      {% for artist in artists %}
+      <a href="{{ url_for('public.shop', artist=artist.id) }}"
+         class="filter-btn {% if active_artist == artist.id %}is-active{% endif %}">
+        {{ artist.name }}
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {# 設計卡片 #}
+    {% if designs %}
+    <div class="shop-grid">
+      {% for design in designs %}
+      <a
+        href="{% if not design.is_claimed %}{{ url_for('public.shop_detail', slug=design.slug) }}{% else %}#{% endif %}"
+        class="design-card reveal {% if design.is_claimed %}is-claimed{% endif %}"
+      >
+        <div class="design-card__img-wrap">
+          <img src="{{ design.thumb_url or design.image_url }}" alt="{{ design.title }}" loading="lazy">
+          {% if design.is_claimed %}
+          <div class="design-card__claimed-overlay">
+            <span class="design-card__claimed-badge">已認領</span>
+          </div>
+          {% endif %}
+        </div>
+        <div class="design-card__body">
+          {% if design.artist %}
+          <div class="design-card__artist ed-label">{{ design.artist.name }}</div>
+          {% endif %}
+          <div class="design-card__title">{{ design.title }}</div>
+          <div class="design-card__meta">
+            <span class="design-card__price">
+              {% if not design.is_claimed %}
+                {{ design.currency }} {{ '{:,.0f}'.format(design.price) }}
+              {% else %}
+                —
+              {% endif %}
+            </span>
+            {% if design.placement %}
+            <span class="design-card__tag">{{ design.placement }}</span>
+            {% endif %}
+            {% if design.size_note %}
+            <span class="design-card__tag">{{ design.size_note }}</span>
+            {% endif %}
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+      <p class="empty-state__text">商城正在上架中，敬請期待。</p>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<section class="section" style="background: var(--color-bg-2);">
+  <div class="container">
+    <div style="max-width: 760px;">
+      <span class="section-label">關於認領圖</span>
+      <h2 class="section-title" style="margin: var(--sp-4) 0 var(--sp-8);">什麼是<br>Flash Design？</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--sp-8);">
+        {% for item in [
+          ('買斷限量', '每個設計只賣一份。你買下後，這張圖就只屬於你，不會有第二個人刺同樣的圖。'),
+          ('直接刺', '設計已完成，不需要等待設計稿，確認後即可安排刺青時間。'),
+          ('師傅親作', '所有認領圖均由工作室師傅原創設計，保證品質與獨特性。')
+        ] %}
+        <div>
+          <h3 style="font-size: var(--text-base); font-weight: 800; margin-bottom: var(--sp-3);">{{ item[0] }}</h3>
+          <p style="font-size: var(--text-sm); color: var(--color-text-2); line-height: 1.8;">{{ item[1] }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Portfolio — 作品集{% endblock %}
+{% block meta_desc %}ROSZIE INK 刺青作品集，收錄工作室所有師傅的精選作品。{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero__inner">
+      <span class="section-label">01 — Portfolio</span>
+      <h1 class="page-hero__title">All<br>Works</h1>
+      <p class="page-hero__desc">每一件作品都是一段旅程的開始。</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    {% if works.items %}
+    <div class="works-grid works-grid--large">
+      {% for work in works.items %}
+      <article class="work-card reveal" data-index="{{ loop.index }}">
+        <img
+          class="work-card__image lazyload"
+          src="{{ work.thumb_url or work.image_url }}"
+          alt="{{ work.title or '刺青作品' }}"
+          loading="lazy"
+        >
+        <div class="work-card__overlay">
+          <div class="work-card__meta">
+            {% if work.artist %}{{ work.artist.name }}{% endif %}
+            {% if work.body_part %}&nbsp;/&nbsp;{{ work.body_part }}{% endif %}
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    {% include 'components/pagination.html' with context %}
+
+    {% else %}
+    <div class="empty-state">
+      <p class="empty-state__text">作品集準備中，敬請期待。</p>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<section class="section section--cta" style="border-top: 1px solid var(--color-border);">
+  <div class="container">
+    <div class="cta-block">
+      <div>
+        <span class="section-label">預約諮詢</span>
+        <h2 class="cta-block__title">喜歡<br>我們的作品？</h2>
+      </div>
+      <div class="cta-block__action">
+        <p class="cta-block__desc">填寫預約表單，告訴我們你的想法，讓我們一起創作屬於你的作品。</p>
+        <a href="{{ url_for('public.appointment') }}" class="btn btn--primary">立即預約 &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

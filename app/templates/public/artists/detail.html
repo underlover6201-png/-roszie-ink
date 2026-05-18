@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}{{ artist.name }} — Artist{% endblock %}
+{% block meta_desc %}{{ artist.name }} 的刺青作品集與個人介紹。{% endblock %}
+
+{% block content %}
+
+<section class="artist-profile section">
+  <div class="container">
+
+    <div class="artist-profile__grid">
+
+      {# 左：大頭照 #}
+      <div class="artist-profile__photo-col">
+        {% if artist.avatar_url %}
+          <div class="artist-profile__photo">
+            <img src="{{ artist.avatar_url }}" alt="{{ artist.name }}" loading="lazy">
+          </div>
+        {% else %}
+          <div class="artist-profile__photo artist-profile__photo--placeholder">
+            <span>{{ artist.name[0] }}</span>
+          </div>
+        {% endif %}
+      </div>
+
+      {# 右：資訊 #}
+      <div class="artist-profile__info-col">
+        <span class="section-label">Artist</span>
+        <h1 class="artist-profile__name">{{ artist.name }}</h1>
+
+        {% if artist.styles %}
+        <div class="artist-profile__styles">
+          {% for style in artist.styles %}
+            <span class="artist-card__tag">{{ style.name }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if artist.bio %}
+        <div class="artist-profile__bio">{{ artist.bio }}</div>
+        {% endif %}
+
+        <div class="artist-profile__actions">
+          <a href="{{ url_for('public.appointment') }}?artist={{ artist.id }}" class="btn btn--primary">
+            向 {{ artist.name }} 預約 &rarr;
+          </a>
+        </div>
+
+        {% if artist.instagram_url or artist.facebook_url or artist.tiktok_url or artist.website_url %}
+        <div class="artist-profile__socials">
+          {% if artist.instagram_url %}
+            <a href="{{ artist.instagram_url }}" target="_blank" rel="noopener" class="social-link">Instagram</a>
+          {% endif %}
+          {% if artist.tiktok_url %}
+            <a href="{{ artist.tiktok_url }}" target="_blank" rel="noopener" class="social-link">TikTok</a>
+          {% endif %}
+          {% if artist.facebook_url %}
+            <a href="{{ artist.facebook_url }}" target="_blank" rel="noopener" class="social-link">Facebook</a>
+          {% endif %}
+          {% if artist.website_url %}
+            <a href="{{ artist.website_url }}" target="_blank" rel="noopener" class="social-link">Website</a>
+          {% endif %}
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% if works %}
+<section class="section" style="border-top: 1px solid var(--color-border);">
+  <div class="container">
+
+    <div style="border-bottom: 1px solid var(--color-border); padding-bottom: var(--sp-4); margin-bottom: var(--sp-10);">
+      <span class="section-label">Portfolio</span>
+      <h2 class="section-title">Selected<br>Works</h2>
+    </div>
+
+    <div class="works-grid">
+      {% for work in works %}
+      <article class="work-card reveal">
+        <img
+          class="work-card__image lazyload"
+          src="{{ work.thumb_url or work.image_url }}"
+          alt="{{ work.title or '刺青作品' }}"
+          loading="lazy"
+        >
+        <div class="work-card__overlay">
+          <div class="work-card__meta">
+            {% if work.body_part %}{{ work.body_part }}{% endif %}
+            {% if work.size %}&nbsp;/&nbsp;{{ work.size.value }}{% endif %}
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endif %}
+
+<section class="section section--cta" style="border-top: 1px solid var(--color-border);">
+  <div class="container">
+    <div style="text-align: center; max-width: 600px; margin: 0 auto; padding: var(--sp-20) 0;">
+      <span class="section-label">預約</span>
+      <h2 class="section-title" style="margin-bottom: var(--sp-8);">Book with<br>{{ artist.name }}</h2>
+      <a href="{{ url_for('public.appointment') }}?artist={{ artist.id }}" class="btn btn--primary">
+        立即預約 &rarr;
+      </a>
+      &nbsp;
+      <a href="{{ url_for('public.artists') }}" class="btn btn--ghost">
+        &larr; 所有師傅
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
