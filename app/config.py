@@ -73,9 +73,8 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
-    CACHE_TYPE = "RedisCache"
-    CACHE_REDIS_URL = os.environ.get("REDIS_URL")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or os.environ.get("SQLALCHEMY_DATABASE_URI")
+    CACHE_TYPE = "SimpleCache"
 
     TALISMAN_CONTENT_SECURITY_POLICY = {
         "default-src": "'self'",
