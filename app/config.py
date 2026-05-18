@@ -73,8 +73,17 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or os.environ.get("SQLALCHEMY_DATABASE_URI")
     CACHE_TYPE = "SimpleCache"
+
+    # Railway 給的 DATABASE_URL 是 postgres:// 格式，SQLAlchemy 2.x 需要 postgresql://
+    _db_url = os.environ.get("DATABASE_URL") or os.environ.get("SQLALCHEMY_DATABASE_URI")
+    if _db_url and _db_url.startswith("postgres://"):
+        _db_url = _db_url.replace("postgres://", "postgresql://", 1)
+    SQLALCHEMY_DATABASE_URI = _db_url
+
+    # Railway 沒有 Redis 時改用記憶體儲存，避免 Flask-Limiter 當機
+    _redis_url = os.environ.get("REDIS_URL")
+    RATELIMIT_STORAGE_URL = _redis_url if _redis_url else "memory://"
 
     TALISMAN_CONTENT_SECURITY_POLICY = {
         "default-src": "'self'",
