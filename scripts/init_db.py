@@ -17,3 +17,16 @@ from app.extensions import db
 with app.app_context():
     db.create_all()
     print("✓ All tables created.")
+
+    # Auto-create admin if no users exist
+    from app.models.user import User, UserRole
+    if User.query.count() == 0:
+        admin = User(
+            email="admin@roszieink.com",
+            username="roszie",
+            role=UserRole.admin,
+        )
+        admin.set_password("roszieink!!!")
+        db.session.add(admin)
+        db.session.commit()
+        print("✓ Admin account created: roszie / roszieink!!!")
