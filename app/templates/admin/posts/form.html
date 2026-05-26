@@ -22,6 +22,7 @@
 </div>
 
 <form method="POST">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 <div class="form-grid">
   <div>
     <div class="admin-form-section">
@@ -100,13 +101,13 @@
       <h3>封面圖片</h3>
       <div class="field">
         <label class="field__label" for="cover_image_url">封面圖 URL</label>
-        <input class="field__input" type="url" id="cover_image_url" name="cover_image_url"
+        <input class="field__input" type="text" id="cover_image_url" name="cover_image_url"
                data-upload="posts" data-thumb="cover_thumb_url"
                value="{{ post.cover_image_url or '' }}" placeholder="https://... 或點下方選擇圖片">
       </div>
       <div class="field">
         <label class="field__label" for="cover_thumb_url">縮圖 URL（自動產生）</label>
-        <input class="field__input" type="url" id="cover_thumb_url" name="cover_thumb_url"
+        <input class="field__input" type="text" id="cover_thumb_url" name="cover_thumb_url"
                value="{{ post.cover_thumb_url or '' }}" placeholder="上傳後自動填入">
       </div>
       {% if post and post.cover_image_url %}

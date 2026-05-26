@@ -26,6 +26,7 @@
 </div>
 
 <form method="POST">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 <div class="form-grid">
   <div>
     <div class="admin-form-section">
@@ -72,13 +73,13 @@
       <h3>圖片</h3>
       <div class="field">
         <label class="field__label" for="image_url">設計圖 URL *</label>
-        <input class="field__input" type="url" id="image_url" name="image_url" required
+        <input class="field__input" type="text" id="image_url" name="image_url" required
                data-upload="flash" data-thumb="thumb_url"
                value="{{ design.image_url if design else '' }}" placeholder="https://... 或點下方選擇圖片">
       </div>
       <div class="field">
         <label class="field__label" for="thumb_url">縮圖 URL（自動產生）</label>
-        <input class="field__input" type="url" id="thumb_url" name="thumb_url"
+        <input class="field__input" type="text" id="thumb_url" name="thumb_url"
                value="{{ design.thumb_url or '' }}" placeholder="上傳後自動填入">
       </div>
       {% if design and design.image_url %}
