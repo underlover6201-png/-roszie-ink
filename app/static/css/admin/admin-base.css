@@ -14,14 +14,18 @@
 body.admin-body {
   background: var(--admin-bg);
   cursor: default;
-  /* 覆蓋公開頁深色文字變數，讓後台暗色背景下文字清楚 */
-  --color-text:       #f0f0ee;
-  --color-text-2:     #c8c8c4;
-  --color-text-muted: #999990;
-  --color-border:     #444440;
-  --color-error:      #ff5555;
-  --color-success:    #44cc77;
-  --color-warning:    #ffbb33;
+  /* 覆蓋公開頁變數，讓後台暗色背景下顯示正確 */
+  --color-text:         #f0f0ee;
+  --color-text-2:       #c8c8c4;
+  --color-text-muted:   #999990;
+  --color-border:       #333330;
+  --color-border-light: #2a2a28;
+  --color-bg:           #0d0d0d;
+  --color-bg-2:         #161614;
+  --color-bg-input:     #1a1a18;
+  --color-error:        #ff5555;
+  --color-success:      #44cc77;
+  --color-warning:      #ffbb33;
 }
 
 /* ── Layout ───────────────────────────────────────── */
