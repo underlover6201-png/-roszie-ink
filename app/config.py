@@ -32,6 +32,10 @@ class Config:
     S3_ENDPOINT_URL = os.environ.get("S3_ENDPOINT_URL")
     R2_PUBLIC_URL = os.environ.get("R2_PUBLIC_URL", "")
     R2_ACCOUNT_ID = os.environ.get("R2_ACCOUNT_ID", "")
+    # Cloudinary
+    CLOUDINARY_CLOUD_NAME = os.environ.get("CLOUDINARY_CLOUD_NAME", "")
+    CLOUDINARY_API_KEY = os.environ.get("CLOUDINARY_API_KEY", "")
+    CLOUDINARY_API_SECRET = os.environ.get("CLOUDINARY_API_SECRET", "")
 
     # 安全性
     MAX_LOGIN_ATTEMPTS = int(os.environ.get("MAX_LOGIN_ATTEMPTS", 5))
