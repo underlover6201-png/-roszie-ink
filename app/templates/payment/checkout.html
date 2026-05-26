@@ -113,6 +113,7 @@
 
       {# 左：填寫資料 #}
       <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
         <div style="border-bottom: 1px solid var(--color-border); padding-bottom: var(--sp-8); margin-bottom: var(--sp-8);">
           <h2 style="font-size: var(--text-base); font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: var(--sp-6);">你的資料</h2>
