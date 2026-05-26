@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from wsgi import app
 from app.extensions import db
+from scripts.seed_data import _seed_logic
 
 with app.app_context():
     db.create_all()
@@ -30,3 +31,10 @@ with app.app_context():
         db.session.add(admin)
         db.session.commit()
         print("✓ Admin account created: roszie / roszieink!!!")
+
+    # Seed demo data if DB is empty
+    from app.models.artist import Artist
+    if Artist.query.count() == 0:
+        print("Seeding demo data...")
+        _seed_logic()
+        print("✓ Demo data seeded.")

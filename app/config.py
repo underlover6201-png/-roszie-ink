@@ -30,6 +30,8 @@ class Config:
     S3_SECRET_KEY = os.environ.get("S3_SECRET_KEY")
     S3_REGION = os.environ.get("S3_REGION", "auto")
     S3_ENDPOINT_URL = os.environ.get("S3_ENDPOINT_URL")
+    R2_PUBLIC_URL = os.environ.get("R2_PUBLIC_URL", "")
+    R2_ACCOUNT_ID = os.environ.get("R2_ACCOUNT_ID", "")
 
     # 安全性
     MAX_LOGIN_ATTEMPTS = int(os.environ.get("MAX_LOGIN_ATTEMPTS", 5))

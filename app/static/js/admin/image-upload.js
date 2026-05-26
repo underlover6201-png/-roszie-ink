@@ -3,6 +3,8 @@
   'use strict';
 
   function getCsrfToken() {
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    if (meta) return meta.content;
     const el = document.getElementById('csrf_token');
     return el ? el.value : '';
   }
