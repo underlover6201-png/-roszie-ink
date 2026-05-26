@@ -63,12 +63,12 @@
       {{ form.hidden_tag() }}
 
       <div class="field">
-        {{ form.email.label(class='field__label') }}
-        {{ form.email(class='field__input' + (' is-error' if form.email.errors else ''),
-                      placeholder='admin@roszieink.com',
-                      autocomplete='email') }}
-        {% if form.email.errors %}
-          <span class="field__error">{{ form.email.errors[0] }}</span>
+        {{ form.username.label(class='field__label') }}
+        {{ form.username(class='field__input' + (' is-error' if form.username.errors else ''),
+                         placeholder='帳號名稱',
+                         autocomplete='username') }}
+        {% if form.username.errors %}
+          <span class="field__error">{{ form.username.errors[0] }}</span>
         {% endif %}
       </div>
 

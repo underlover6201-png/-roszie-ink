@@ -9,17 +9,22 @@ def home():
     from app.models.work import Work
     from app.models.artist import Artist
     from app.models.post import Post, PostStatus
+    from app.models.course import Course, CourseStatus
 
     featured_works = Work.query.filter_by(is_featured=True, is_published=True).limit(9).all()
     artists = Artist.query.filter_by(is_active=True).order_by(Artist.sort_order).all()
     latest_posts = (
         Post.query.filter_by(status=PostStatus.published).order_by(Post.published_at.desc()).limit(3).all()
     )
+    featured_courses = (
+        Course.query.filter_by(status=CourseStatus.open).limit(3).all()
+    )
     return render_template(
         "public/home.html",
         featured_works=featured_works,
         artists=artists,
         latest_posts=latest_posts,
+        featured_courses=featured_courses,
     )
 
 

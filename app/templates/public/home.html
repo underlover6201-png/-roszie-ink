@@ -156,6 +156,57 @@
 
 
 {# ══════════════════════════════════════════════════
+   COURSES — 主業
+   ══════════════════════════════════════════════════ #}
+{% if featured_courses %}
+<section class="section section--courses" id="courses">
+  <div class="container">
+
+    <div style="display:grid; grid-template-columns:1fr auto; align-items:end; border-bottom: 1px solid var(--color-border); padding-bottom: var(--sp-4); margin-bottom: var(--sp-10);">
+      <div>
+        <span class="section-label">03 — Education</span>
+        <h2 class="section-title">學刺青<br>從這裡開始</h2>
+      </div>
+      <a href="{{ url_for('public.courses') }}" class="btn btn--ghost">
+        全部課程 &rarr;
+      </a>
+    </div>
+
+    <div class="courses-grid">
+      {% for course in featured_courses %}
+      <article class="course-card reveal">
+        <div class="course-card__body">
+          <div class="course-card__index ed-label">0{{ loop.index }}</div>
+          <h3 class="course-card__title">{{ course.title }}</h3>
+          <p class="course-card__desc">{{ course.description[:80] }}…</p>
+          <div class="course-card__meta">
+            {% if course.instructor %}
+              <span>By {{ course.instructor.name }}</span>
+            {% endif %}
+            {% if course.start_date %}
+              <span>&nbsp;·&nbsp;{{ course.start_date.strftime('%m/%d') }}</span>
+            {% endif %}
+            {% if course.max_students %}
+              <span>&nbsp;·&nbsp;限 {{ course.max_students }} 名</span>
+            {% endif %}
+          </div>
+          <div class="course-card__footer">
+            <span class="course-card__price">NT$ {{ "{:,}".format(course.price | int) }}</span>
+            <a href="{{ url_for('public.course_detail', slug=course.slug) }}" class="btn btn--sm btn--primary">
+              報名 &rarr;
+            </a>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endif %}
+
+
+{# ══════════════════════════════════════════════════
    MAGAZINE
    ══════════════════════════════════════════════════ #}
 {% if latest_posts %}
@@ -163,7 +214,7 @@
   <div class="container">
 
     <div style="border-bottom: 1px solid var(--color-border); padding-bottom: var(--sp-4); margin-bottom: var(--sp-10);">
-      <span class="section-label">03 — Magazine</span>
+      <span class="section-label">04 — Magazine</span>
       <h2 class="section-title">Latest Stories</h2>
     </div>
 
@@ -208,7 +259,7 @@
   <div class="container">
     <div class="newsletter-block">
       <div class="newsletter-block__left">
-        <span class="section-label">04 — Newsletter</span>
+        <span class="section-label">05 — Newsletter</span>
         <h2 class="newsletter-block__title">Stay<br>In The<br>Loop.</h2>
       </div>
       <div class="newsletter-block__right">

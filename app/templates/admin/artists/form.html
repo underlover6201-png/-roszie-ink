@@ -85,12 +85,13 @@
       <div class="field">
         <label class="field__label" for="avatar_url">大頭照 URL</label>
         <input class="field__input" type="url" id="avatar_url" name="avatar_url"
-               value="{{ artist.avatar_url or '' }}" placeholder="https://...">
+               data-upload="artists" data-thumb="avatar_thumb_url"
+               value="{{ artist.avatar_url or '' }}" placeholder="https://... 或點下方選擇圖片">
       </div>
       <div class="field">
-        <label class="field__label" for="avatar_thumb_url">縮圖 URL（選填）</label>
+        <label class="field__label" for="avatar_thumb_url">縮圖 URL（自動產生）</label>
         <input class="field__input" type="url" id="avatar_thumb_url" name="avatar_thumb_url"
-               value="{{ artist.avatar_thumb_url or '' }}" placeholder="https://...（留空則使用大頭照）">
+               value="{{ artist.avatar_thumb_url or '' }}" placeholder="上傳後自動填入">
       </div>
       {% if artist and artist.avatar_url %}
       <img src="{{ artist.avatar_thumb_url or artist.avatar_url }}" alt="preview"

@@ -4,145 +4,353 @@
 
 {% block extra_css %}
 <style>
-.course-layout {
+/* ── 上方 Hero：左圖右資訊 ─────────────────────────── */
+.course-hero {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: var(--sp-12);
-  align-items: start;
+  grid-template-columns: 3fr 2fr;
+  gap: 0;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
 }
 @media (max-width: 900px) {
-  .course-layout { grid-template-columns: 1fr; }
+  .course-hero { grid-template-columns: 1fr; }
+}
+.course-hero__image {
+  position: relative;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  border-right: 1px solid var(--color-border);
+}
+@media (max-width: 900px) {
+  .course-hero__image {
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    aspect-ratio: 16/9;
+  }
+}
+.course-hero__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.course-hero__image-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  background: var(--color-bg-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.course-hero__info {
+  padding: var(--sp-10) var(--sp-8);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--sp-6);
+}
+.course-hero__instructor {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.course-hero__title {
+  font-size: var(--text-3xl);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: var(--sp-3) 0 var(--sp-5);
+}
+.course-hero__desc {
+  font-size: var(--text-base);
+  color: var(--color-text-2);
+  line-height: 1.7;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.course-hero__price {
+  font-size: var(--text-3xl);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+.course-hero__price span {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-left: var(--sp-2);
+}
+.course-hero__cta { margin-top: var(--sp-4); }
+.course-hero__cta .btn {
+  width: 100%;
+  text-align: center;
+  display: block;
+  padding: var(--sp-4);
+  font-size: var(--text-base);
+}
+.course-hero__note {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-top: var(--sp-2);
+}
+
+/* ── 課程快訊列 ────────────────────────────────────── */
+.course-stats {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
+}
+.course-stat {
+  flex: 1;
+  min-width: 140px;
+  padding: var(--sp-5) var(--sp-6);
+  border-right: 1px solid var(--color-border);
+}
+.course-stat:last-child { border-right: none; }
+.course-stat__label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: var(--sp-2);
+}
+.course-stat__value {
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+/* ── 下方主體：大綱 + 側邊卡 ─────────────────────── */
+.course-body {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: var(--sp-12);
+  align-items: start;
+  padding: var(--sp-12) 0;
+}
+@media (max-width: 1024px) {
+  .course-body { grid-template-columns: 1fr; }
 }
 .course-sidebar {
   position: sticky;
-  top: calc(var(--navbar-h) + var(--sp-8));
+  top: calc(var(--navbar-h) + var(--sp-6));
   border: 1px solid var(--color-border);
   padding: var(--sp-8);
+}
+.course-sidebar__price {
+  font-size: var(--text-3xl);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  margin-bottom: var(--sp-6);
+  padding-bottom: var(--sp-6);
+  border-bottom: 1px solid var(--color-border-light);
 }
 .course-info-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--sp-4) 0;
+  padding: var(--sp-3) 0;
   border-bottom: 1px solid var(--color-border-light);
+  gap: var(--sp-4);
 }
 .course-info-row:last-of-type { border-bottom: none; }
+.course-info-row__label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+.course-info-row__value {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-align: right;
+}
 .course-content { font-size: var(--text-base); line-height: 1.9; color: var(--color-text-2); }
-.course-content h2, .course-content h3 { color: var(--color-text); font-weight: 800; margin: var(--sp-8) 0 var(--sp-3); }
+.course-content h2 { font-size: var(--text-2xl); font-weight: 800; color: var(--color-text); margin: var(--sp-10) 0 var(--sp-4); padding-top: var(--sp-8); border-top: 1px solid var(--color-border-light); }
+.course-content h3 { font-size: var(--text-lg); font-weight: 700; color: var(--color-text); margin: var(--sp-6) 0 var(--sp-3); }
 .course-content p { margin-bottom: var(--sp-5); }
 .course-content ul, .course-content ol { padding-left: var(--sp-8); margin-bottom: var(--sp-5); }
+.course-content li { margin-bottom: var(--sp-2); }
 </style>
 {% endblock %}
 
 {% block content %}
 
-<section class="section">
-  <div class="container">
+{# ── Hero：左圖右資訊 ─────────────────────────────── #}
+<div class="course-hero">
 
-    <div style="margin-bottom: var(--sp-10); padding-bottom: var(--sp-6); border-bottom: 1px solid var(--color-border);">
-      <a href="{{ url_for('public.courses') }}" class="ed-label" style="color: var(--color-text-muted);">&larr; 所有課程</a>
+  {# 左：封面圖 #}
+  <div class="course-hero__image">
+    {% if course.cover_image_url %}
+    <img src="{{ course.cover_image_url }}" alt="{{ course.title }}">
+    {% else %}
+    <div class="course-hero__image-placeholder">
+      <span style="font-size: var(--text-xs); color: var(--color-text-muted); letter-spacing: 0.1em; text-transform: uppercase;">ROSZIE INK</span>
+    </div>
+    {% endif %}
+  </div>
+
+  {# 右：課程資訊 + 報名 #}
+  <div class="course-hero__info">
+    <div>
+      <div style="margin-bottom: var(--sp-4);">
+        <a href="{{ url_for('public.courses') }}" style="font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted);">&larr; 所有課程</a>
+      </div>
       {% if course.instructor %}
-        <span class="ed-label" style="margin-left: var(--sp-4);">{{ course.instructor.name }}</span>
+      <div class="course-hero__instructor">講師：{{ course.instructor.name }}</div>
+      {% endif %}
+      <h1 class="course-hero__title">{{ course.title }}</h1>
+      {% if course.description %}
+      <p class="course-hero__desc">{{ course.description }}</p>
       {% endif %}
     </div>
 
-    <div class="course-layout">
-
-      {# 主內容 #}
-      <div>
-        {% if course.cover_image_url %}
-        <img src="{{ course.cover_image_url }}" alt="{{ course.title }}" loading="lazy"
-          style="width: 100%; max-height: 480px; object-fit: cover; margin-bottom: var(--sp-10);">
+    <div>
+      {% if course.price %}
+      <div class="course-hero__price">
+        {{ '{:,.0f}'.format(course.price) }}<span>{{ course.currency or 'TWD' }}</span>
+      </div>
+      {% endif %}
+      <div class="course-hero__cta">
+        {% if course.is_full %}
+          <button class="btn btn--ghost" disabled style="width:100%;opacity:.5;cursor:not-allowed;">已額滿</button>
+        {% elif not course.price %}
+          <a href="mailto:{{ site.email or 'info@roszieink.com' }}?subject=報名課程：{{ course.title }}"
+             class="btn btn--primary">聯繫報名 &rarr;</a>
+        {% else %}
+          <a href="{{ url_for('payment.course_checkout', slug=course.slug) }}"
+             class="btn btn--primary">立即報名 &rarr;</a>
         {% endif %}
-
-        <h1 style="font-size: var(--text-4xl); font-weight: 900; line-height: 1.1; margin-bottom: var(--sp-6);">
-          {{ course.title }}
-        </h1>
-
-        {% if course.description %}
-        <p style="font-size: var(--text-lg); color: var(--color-text-2); line-height: 1.7; margin-bottom: var(--sp-10); padding-bottom: var(--sp-10); border-bottom: 1px solid var(--color-border);">
-          {{ course.description }}
-        </p>
+        {% if course.price %}
+        <p class="course-hero__note">線上安全付款，由綠界金流提供</p>
         {% endif %}
+      </div>
+    </div>
+  </div>
 
-        {% if course.content %}
-        <div class="course-content">{{ course.content | safe }}</div>
+</div>
+
+{# ── 快訊列 ───────────────────────────────────────── #}
+<div class="course-stats">
+  {% if course.start_date %}
+  <div class="course-stat">
+    <div class="course-stat__label">開始日期</div>
+    <div class="course-stat__value">{{ course.start_date.strftime('%Y/%m/%d') }}</div>
+  </div>
+  {% endif %}
+  {% if course.end_date %}
+  <div class="course-stat">
+    <div class="course-stat__label">結束日期</div>
+    <div class="course-stat__value">{{ course.end_date.strftime('%Y/%m/%d') }}</div>
+  </div>
+  {% endif %}
+  {% if course.location %}
+  <div class="course-stat">
+    <div class="course-stat__label">地點</div>
+    <div class="course-stat__value">{{ course.location }}</div>
+  </div>
+  {% endif %}
+  {% if course.max_students %}
+  <div class="course-stat">
+    <div class="course-stat__label">剩餘名額</div>
+    <div class="course-stat__value">
+      {% if course.is_full %}
+        <span style="color:var(--color-error);">已額滿</span>
+      {% else %}
+        {{ course.seats_remaining }} / {{ course.max_students }}
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+  {% if course.instructor %}
+  <div class="course-stat">
+    <div class="course-stat__label">講師</div>
+    <div class="course-stat__value">{{ course.instructor.name }}</div>
+  </div>
+  {% endif %}
+</div>
+
+{# ── 主體：大綱 + 側邊卡 ─────────────────────────── #}
+<div class="container">
+  <div class="course-body">
+
+    {# 左：課程大綱 #}
+    <div>
+      {% if course.content %}
+      <div class="course-content">{{ course.content | safe }}</div>
+      {% elif course.description %}
+      <p style="font-size: var(--text-lg); line-height: 1.8; color: var(--color-text-2);">{{ course.description }}</p>
+      {% else %}
+      <p style="color: var(--color-text-muted);">課程詳細內容即將公布，請留意最新消息。</p>
+      {% endif %}
+    </div>
+
+    {# 右：報名卡（sticky） #}
+    <aside class="course-sidebar">
+      {% if course.price %}
+      <div class="course-sidebar__price">
+        {{ '{:,.0f}'.format(course.price) }}
+        <span style="font-size: var(--text-sm); font-weight: 500; color: var(--color-text-muted);"> {{ course.currency or 'TWD' }}</span>
+      </div>
+      {% endif %}
+
+      <div style="margin-bottom: var(--sp-6);">
+        {% if course.start_date %}
+        <div class="course-info-row">
+          <span class="course-info-row__label">開始日期</span>
+          <span class="course-info-row__value">{{ course.start_date.strftime('%Y/%m/%d') }}</span>
+        </div>
+        {% endif %}
+        {% if course.end_date %}
+        <div class="course-info-row">
+          <span class="course-info-row__label">結束日期</span>
+          <span class="course-info-row__value">{{ course.end_date.strftime('%Y/%m/%d') }}</span>
+        </div>
+        {% endif %}
+        {% if course.location %}
+        <div class="course-info-row">
+          <span class="course-info-row__label">地點</span>
+          <span class="course-info-row__value">{{ course.location }}</span>
+        </div>
+        {% endif %}
+        {% if course.max_students %}
+        <div class="course-info-row">
+          <span class="course-info-row__label">名額</span>
+          <span class="course-info-row__value">
+            {% if course.is_full %}<span style="color:var(--color-error);">已額滿</span>
+            {% else %}剩 {{ course.seats_remaining }} / {{ course.max_students }}{% endif %}
+          </span>
+        </div>
+        {% endif %}
+        {% if course.instructor %}
+        <div class="course-info-row">
+          <span class="course-info-row__label">講師</span>
+          <span class="course-info-row__value">{{ course.instructor.name }}</span>
+        </div>
         {% endif %}
       </div>
 
-      {# 側邊報名卡 #}
-      <aside class="course-sidebar">
-        {% if course.price %}
-        <div style="font-size: var(--text-3xl); font-weight: 900; margin-bottom: var(--sp-6);">
-          {{ course.currency or 'TWD' }} {{ '{:,.0f}'.format(course.price) }}
-        </div>
-        {% endif %}
-
-        <div>
-          {% if course.start_date %}
-          <div class="course-info-row">
-            <span class="ed-label">開始日期</span>
-            <span style="font-weight: 600;">{{ course.start_date.strftime('%Y/%m/%d') }}</span>
-          </div>
-          {% endif %}
-          {% if course.end_date %}
-          <div class="course-info-row">
-            <span class="ed-label">結束日期</span>
-            <span style="font-weight: 600;">{{ course.end_date.strftime('%Y/%m/%d') }}</span>
-          </div>
-          {% endif %}
-          {% if course.location %}
-          <div class="course-info-row">
-            <span class="ed-label">地點</span>
-            <span style="font-weight: 600;">{{ course.location }}</span>
-          </div>
-          {% endif %}
-          {% if course.max_students %}
-          <div class="course-info-row">
-            <span class="ed-label">名額</span>
-            <span style="font-weight: 600;">
-              {% if course.is_full %}
-                <span style="color: var(--color-error);">已額滿</span>
-              {% else %}
-                剩 {{ course.seats_remaining }} / {{ course.max_students }}
-              {% endif %}
-            </span>
-          </div>
-          {% endif %}
-          {% if course.instructor %}
-          <div class="course-info-row">
-            <span class="ed-label">講師</span>
-            <span style="font-weight: 600;">{{ course.instructor.name }}</span>
-          </div>
-          {% endif %}
-        </div>
-
-        <div style="margin-top: var(--sp-8);">
-          {% if course.is_full %}
-            <button class="btn btn--ghost" style="width:100%; opacity:0.5; cursor:not-allowed;" disabled>已額滿</button>
-          {% elif not course.price %}
-            <a href="mailto:{{ site.email or 'info@roszieink.com' }}?subject=報名課程：{{ course.title }}"
-              class="btn btn--primary" style="width:100%; display:block; text-align:center;">
-              聯繫報名 &rarr;
-            </a>
-            <p style="font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--sp-3); text-align: center;">
-              尚未開放線上報名，請 Email 聯繫
-            </p>
-          {% else %}
-            <a href="{{ url_for('payment.course_checkout', slug=course.slug) }}"
-              class="btn btn--primary" style="width:100%; display:block; text-align:center;">
-              立即報名 &rarr;
-            </a>
-            <p style="font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--sp-3); text-align: center;">
-              線上安全付款，由綠界金流提供
-            </p>
-          {% endif %}
-        </div>
-      </aside>
-
-    </div>
+      {% if course.is_full %}
+        <button class="btn btn--ghost" disabled style="width:100%;opacity:.5;cursor:not-allowed;">已額滿</button>
+      {% elif not course.price %}
+        <a href="mailto:{{ site.email or 'info@roszieink.com' }}?subject=報名課程：{{ course.title }}"
+           class="btn btn--primary" style="width:100%;display:block;text-align:center;">聯繫報名 &rarr;</a>
+      {% else %}
+        <a href="{{ url_for('payment.course_checkout', slug=course.slug) }}"
+           class="btn btn--primary" style="width:100%;display:block;text-align:center;">立即報名 &rarr;</a>
+        <p style="font-size:var(--text-xs);color:var(--color-text-muted);text-align:center;margin-top:var(--sp-3);">線上安全付款，由綠界金流提供</p>
+      {% endif %}
+    </aside>
 
   </div>
-</section>
+</div>
 
 {% endblock %}

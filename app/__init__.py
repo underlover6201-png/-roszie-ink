@@ -21,6 +21,7 @@ def create_app(config_name: str | None = None) -> Flask:
     app.config.from_object(config[config_name])
 
     _init_extensions(app)
+    _serve_uploads(app)
     _register_blueprints(app)
     _register_error_handlers(app)
     _register_context_processors(app)
@@ -58,6 +59,16 @@ def _init_extensions(app: Flask) -> None:
         from app.models.user import User
 
         return db.session.get(User, int(user_id))
+
+
+def _serve_uploads(app: Flask) -> None:
+    from flask import send_from_directory
+    import os
+
+    @app.route("/uploads/<path:filename>")
+    def uploaded_file(filename):
+        upload_root = os.path.abspath(app.config["UPLOAD_FOLDER"])
+        return send_from_directory(upload_root, filename)
 
 
 def _register_blueprints(app: Flask) -> None:

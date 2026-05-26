@@ -79,12 +79,13 @@
       <div class="field">
         <label class="field__label" for="image_url">圖片 URL *</label>
         <input class="field__input" type="url" id="image_url" name="image_url" required
-               value="{{ work.image_url or '' }}" placeholder="https://...">
+               data-upload="works" data-thumb="thumb_url"
+               value="{{ work.image_url or '' }}" placeholder="https://... 或點下方選擇圖片">
       </div>
       <div class="field">
-        <label class="field__label" for="thumb_url">縮圖 URL（選填）</label>
+        <label class="field__label" for="thumb_url">縮圖 URL（自動產生）</label>
         <input class="field__input" type="url" id="thumb_url" name="thumb_url"
-               value="{{ work.thumb_url or '' }}" placeholder="https://...">
+               value="{{ work.thumb_url or '' }}" placeholder="上傳後自動填入">
       </div>
       {% if work and work.image_url %}
       <img src="{{ work.thumb_url or work.image_url }}" alt="preview"

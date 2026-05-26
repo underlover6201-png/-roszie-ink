@@ -18,7 +18,7 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data.lower().strip()).first()
+        user = User.query.filter_by(username=form.username.data.strip()).first()
 
         if user is None or not user.is_active:
             flash("帳號或密碼錯誤。", "error")

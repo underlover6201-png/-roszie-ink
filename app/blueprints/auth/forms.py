@@ -1,13 +1,13 @@
 """認證表單"""
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, PasswordField, StringField
-from wtforms.validators import DataRequired, Email, Length
+from wtforms.validators import DataRequired, Length
 
 
 class LoginForm(FlaskForm):
-    email = StringField(
-        "Email",
-        validators=[DataRequired(message="請輸入 Email"), Email(message="Email 格式不正確")],
+    username = StringField(
+        "帳號",
+        validators=[DataRequired(message="請輸入帳號")],
     )
     password = PasswordField(
         "密碼",

@@ -118,7 +118,8 @@
       <div class="field">
         <label class="field__label" for="cover_image_url">圖片 URL</label>
         <input class="field__input" type="url" id="cover_image_url" name="cover_image_url"
-               value="{{ course.cover_image_url or '' }}" placeholder="https://...">
+               data-upload="courses"
+               value="{{ course.cover_image_url or '' }}" placeholder="https://... 或點下方選擇圖片">
       </div>
       {% if course and course.cover_image_url %}
       <img src="{{ course.cover_image_url }}" alt="preview"

@@ -14,24 +14,28 @@
 
     <ul class="navbar__menu" id="navbar-menu" role="list">
       <li>
-        <a class="navbar__link {% if request.endpoint == 'public.artists' %}is-active{% endif %}"
-           href="{{ url_for('public.artists') }}">Artists</a>
-      </li>
-      <li>
-        <a class="navbar__link {% if request.endpoint == 'public.portfolio' %}is-active{% endif %}"
-           href="{{ url_for('public.portfolio') }}">Portfolio</a>
-      </li>
-      <li>
-        <a class="navbar__link {% if request.endpoint == 'public.magazine' %}is-active{% endif %}"
-           href="{{ url_for('public.magazine') }}">Magazine</a>
-      </li>
-      <li>
-        <a class="navbar__link {% if request.endpoint == 'public.courses' %}is-active{% endif %}"
-           href="{{ url_for('public.courses') }}">Courses</a>
-      </li>
-      <li>
         <a class="navbar__link {% if request.endpoint == 'public.about' %}is-active{% endif %}"
            href="{{ url_for('public.about') }}">About</a>
+      </li>
+      <li>
+        <a class="navbar__link {% if request.endpoint == 'public.courses' or request.endpoint == 'public.course_detail' %}is-active{% endif %}"
+           href="{{ url_for('public.courses') }}">課程</a>
+      </li>
+      <li>
+        <a class="navbar__link {% if request.endpoint == 'public.artists' or request.endpoint == 'public.artist_detail' %}is-active{% endif %}"
+           href="{{ url_for('public.artists') }}">店內藝術家</a>
+      </li>
+      <li>
+        <a class="navbar__link {% if request.endpoint == 'public.shop' or request.endpoint == 'public.shop_detail' %}is-active{% endif %}"
+           href="{{ url_for('public.shop') }}">認領圖商城</a>
+      </li>
+      <li>
+        <a class="navbar__link {% if request.endpoint == 'public.magazine' or request.endpoint == 'public.post_detail' %}is-active{% endif %}"
+           href="{{ url_for('public.magazine') }}">ROSZIE 雜誌</a>
+      </li>
+      <li>
+        <a class="navbar__link {% if request.endpoint == 'public.contact' %}is-active{% endif %}"
+           href="{{ url_for('public.contact') }}">活動公告</a>
       </li>
       <li>
         <a class="navbar__cta" href="{{ url_for('public.appointment') }}">
