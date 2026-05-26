@@ -44,9 +44,7 @@ def _upload_cloudinary(buf: bytes, folder: str) -> tuple[str, str]:
         fetch_format="auto",
     )
     image_url = result["secure_url"]
-
-    # Cloudinary 縮圖：在 URL 中加 transform
-    thumb_url = image_url.replace("/upload/", "/upload/w_400,h_400,c_limit,q_auto/")
+    thumb_url = image_url  # Cloudinary 自動最佳化，不另加 transform
 
     return image_url, thumb_url
 
