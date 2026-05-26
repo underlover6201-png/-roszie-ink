@@ -82,7 +82,8 @@
       <article class="work-card reveal">
         <img
           class="work-card__image lazyload"
-          src="{{ work.thumb_url or work.image_url }}"
+          data-src="{{ work.thumb_url or work.image_url }}"
+          src=""
           alt="{{ work.title or '刺青作品' }}"
           loading="lazy"
         >

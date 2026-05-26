@@ -25,7 +25,8 @@
           {% if artist.avatar_url %}
             <img
               class="artist-card__image lazyload"
-              src="{{ artist.avatar_url }}"
+              data-src="{{ artist.avatar_url }}"
+              src=""
               alt="{{ artist.name }}"
               loading="lazy"
             >
