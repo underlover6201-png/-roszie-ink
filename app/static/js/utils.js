@@ -3,7 +3,7 @@
  */
 
 /** 防抖 */
-export function debounce(fn, delay = 250) {
+function debounce(fn, delay = 250) {
   let timer;
   return (...args) => {
     clearTimeout(timer);
@@ -12,7 +12,7 @@ export function debounce(fn, delay = 250) {
 }
 
 /** 節流 */
-export function throttle(fn, limit = 100) {
+functionthrottle(fn, limit = 100) {
   let lastCall = 0;
   return (...args) => {
     const now = Date.now();
@@ -38,12 +38,12 @@ export async function apiFetch(url, options = {}) {
 }
 
 /** 讀取 CSRF token（Flask-WTF 產生的 meta tag） */
-export function getCsrfToken() {
+functiongetCsrfToken() {
   return document.querySelector('meta[name="csrf-token"]')?.content ?? '';
 }
 
 /** 簡單 toast 通知 */
-export function showToast(message, type = 'info', duration = 3500) {
+functionshowToast(message, type = 'info', duration = 3500) {
   const toast = document.createElement('div');
   toast.textContent = message;
   Object.assign(toast.style, {
